@@ -104,6 +104,7 @@ public struct LiquidTabBar<ID: Hashable & Sendable>: View {
 
     @ViewBuilder
     private var morphingBar: some View {
+        #if compiler(>=6.2)
         if #available(iOS 26.0, macOS 26.0, *) {
             GlassEffectContainer(spacing: theme.itemSpacing) {
                 morphingItems
@@ -111,6 +112,9 @@ public struct LiquidTabBar<ID: Hashable & Sendable>: View {
         } else {
             morphingItems
         }
+        #else
+        morphingItems
+        #endif
     }
 
     private var morphingItems: some View {
@@ -154,11 +158,15 @@ public struct LiquidTabBar<ID: Hashable & Sendable>: View {
         .accessibilityLabel(item.title)
         .accessibilityAddTraits(isSelected ? .isSelected : [])
 
+        #if compiler(>=6.2)
         if #available(iOS 26.0, macOS 26.0, *) {
             button.glassEffectID(item.id, in: selectionNamespace)
         } else {
             button
         }
+        #else
+        button
+        #endif
     }
 
     private func select(_ item: LiquidTabItem<ID>) {
