@@ -1,0 +1,49 @@
+name: Bug report
+description: Report a reproducible problem in the package or demo.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: Thank you for helping improve Liquid Glass Tab Bars.
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Tag, commit, or branch where the issue occurs.
+      placeholder: 1.0.0
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Xcode, iOS, device or simulator, and accessibility settings.
+      placeholder: Xcode 26, iOS 26 simulator, Reduce Motion off
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+      description: Provide the smallest reliable sequence that reproduces the issue.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: sample
+    attributes:
+      label: Minimal sample or screenshots
+      description: Attach a small project, code snippet, screenshot, or recording when useful.

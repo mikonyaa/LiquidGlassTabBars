@@ -1,0 +1,15 @@
+excluded:
+  - .build
+  - Packages/LiquidUI/.build
+  - DerivedData
+
+line_length:
+  warning: 120
+  error: 180
+  ignores_comments: true
+  ignores_urls: true
+
+identifier_name:
+  min_length: 2
+
+reporter: xcode

@@ -1,0 +1,31 @@
+name: Focused proposal
+description: Propose a reusable improvement with a concrete product need.
+title: "[Proposal]: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: Describe the product or developer problem before proposing an API.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Explain the interaction, fallback behavior, and expected customization points.
+    validations:
+      required: true
+  - type: textarea
+    id: accessibility
+    attributes:
+      label: Accessibility considerations
+      description: Cover Dynamic Type, VoiceOver, motion, transparency, and target size when relevant.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered

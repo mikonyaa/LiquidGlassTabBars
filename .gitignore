@@ -1,0 +1,16 @@
+.DS_Store
+.build/
+.swiftpm/
+DerivedData*/
+build/
+*.xcuserstate
+xcuserdata/
+*.xccheckout
+*.xcscmblueprint
+*.moved-aside
+*.ipa
+*.dSYM.zip
+*.dSYM
+Assets/GIFs/*.mov
+Assets/GIFs/*.mp4
+Assets/Screenshots/qa-*.png
