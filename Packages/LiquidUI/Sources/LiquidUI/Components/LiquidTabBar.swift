@@ -9,7 +9,7 @@ public struct LiquidTabBar<ID: Hashable & Sendable>: View {
 
     @Namespace private var selectionNamespace
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @ScaledMetric(relativeTo: .body) private var floatingHeight: CGFloat = 60
+    @ScaledMetric(relativeTo: .body) private var barHeight: CGFloat = 60
     @ScaledMetric(relativeTo: .body) private var minimumItemHeight: CGFloat = 48
 
     public init(
@@ -50,7 +50,7 @@ public struct LiquidTabBar<ID: Hashable & Sendable>: View {
         }
         .frame(height: minimumItemHeight)
         .padding(6)
-        .frame(height: floatingHeight)
+        .frame(height: barHeight)
         .liquidGlassSurface(in: Capsule(), theme: theme)
         .shadow(color: theme.shadowColor, radius: theme.shadowRadius, y: 8)
     }
@@ -141,7 +141,7 @@ public struct LiquidTabBar<ID: Hashable & Sendable>: View {
             }
             .foregroundStyle(isSelected ? theme.tint : theme.inactiveForeground)
             .padding(.horizontal, isSelected ? 16 : 14)
-            .frame(minWidth: minimumItemHeight, minHeight: minimumItemHeight)
+            .frame(minWidth: minimumItemHeight, minHeight: barHeight)
             .contentShape(Capsule())
         }
         .buttonStyle(.plain)

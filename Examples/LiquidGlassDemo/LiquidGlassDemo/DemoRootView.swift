@@ -71,6 +71,14 @@ struct DemoRootView: View {
                     .scaledToFill()
                     .ignoresSafeArea()
                     .opacity(transitionSnapshotOpacity)
+                    .mask {
+                        VStack(spacing: 0) {
+                            Rectangle().frame(height: 140)
+                            Spacer(minLength: 0)
+                            Rectangle().frame(height: 140)
+                        }
+                        .ignoresSafeArea()
+                    }
                     .allowsHitTesting(false)
                     .accessibilityHidden(true)
             }
@@ -104,6 +112,7 @@ struct DemoRootView: View {
                 .padding(.horizontal, 16)
                 .padding(.top, 8)
                 .padding(.bottom, 6)
+                .offset(y: 16)
             }
     }
 
@@ -158,9 +167,11 @@ struct DemoRootView: View {
         Menu {
             ForEach(DemoPalette.allCases) { candidate in
                 Button {
-                    withAnimation(.easeInOut(duration: 0.24)) {
-                        palette = candidate
-                    }
+                    changePresentation(
+                        tab: selectedTab,
+                        style: barStyle,
+                        palette: candidate
+                    )
                 } label: {
                     Label(
                         candidate.title,
@@ -189,7 +200,7 @@ struct DemoRootView: View {
             }
             await pause(milliseconds: 1_150)
 
-            changePresentation(tab: .home, style: .floating, palette: .graphite)
+            changePresentation(tab: selectedTab, style: .floating, palette: .graphite)
             await pause(milliseconds: 1_650)
 
             withAnimation(.spring(response: 0.32, dampingFraction: 0.82)) {
@@ -197,7 +208,7 @@ struct DemoRootView: View {
             }
             await pause(milliseconds: 1_150)
 
-            changePresentation(tab: .activity, style: .morphing, palette: .classic)
+            changePresentation(tab: selectedTab, style: .morphing, palette: .classic)
             await pause(milliseconds: 1_650)
 
             withAnimation(.spring(response: 0.32, dampingFraction: 0.82)) {
@@ -205,8 +216,13 @@ struct DemoRootView: View {
             }
             await pause(milliseconds: 1_150)
 
-            changePresentation(tab: .home, style: .system, palette: .classic)
-            await pause(milliseconds: 600)
+            withAnimation(.spring(response: 0.32, dampingFraction: 0.82)) {
+                selectedTab = .home
+            }
+            await pause(milliseconds: 1_150)
+
+            changePresentation(tab: selectedTab, style: .system, palette: .classic)
+            await pause(milliseconds: 1_200)
         }
     }
 
@@ -235,6 +251,9 @@ struct DemoRootView: View {
         withTransaction(transaction) {
             selectedTab = tab
             barStyle = style
+        }
+
+        withAnimation(.easeInOut(duration: 0.60)) {
             self.palette = palette
         }
 
@@ -243,11 +262,11 @@ struct DemoRootView: View {
 
             guard transitionID == currentTransitionID else { return }
 
-            withAnimation(.easeInOut(duration: 0.48)) {
+            withAnimation(.easeInOut(duration: 0.60)) {
                 transitionSnapshotOpacity = 0
             }
 
-            await pause(milliseconds: 520)
+            await pause(milliseconds: 650)
 
             guard transitionID == currentTransitionID else { return }
             transitionSnapshot = nil

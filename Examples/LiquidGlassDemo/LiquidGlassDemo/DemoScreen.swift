@@ -39,6 +39,7 @@ struct DemoScreen: View {
                 .font(.body)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
+                .frame(minHeight: 44, alignment: .topLeading)
         }
         .padding(.top, 20)
     }
@@ -173,11 +174,10 @@ private struct DemoBackdrop: View {
 
     @ViewBuilder
     var body: some View {
-        switch palette {
-        case .classic:
+        ZStack {
             Color(red: 0.065, green: 0.07, blue: 0.08)
-                .ignoresSafeArea()
-        case .graphite:
+                .opacity(palette == .classic ? 1 : 0)
+
             LinearGradient(
                 colors: [
                     Color(red: 0.055, green: 0.055, blue: 0.06),
@@ -187,7 +187,9 @@ private struct DemoBackdrop: View {
                 startPoint: .top,
                 endPoint: .bottom
             )
-            .ignoresSafeArea()
+            .opacity(palette == .graphite ? 1 : 0)
         }
+        .animation(.easeInOut(duration: 0.60), value: palette)
+        .ignoresSafeArea()
     }
 }

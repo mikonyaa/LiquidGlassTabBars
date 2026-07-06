@@ -37,7 +37,7 @@ sleep 1.8
 xcrun simctl io "$DEVICE_ID" recordVideo --codec=h264 --force "$RECORDING" &
 RECORDING_PID=$!
 
-sleep 11.2
+sleep 13.4
 kill -INT "$RECORDING_PID" || true
 wait "$RECORDING_PID" || true
 
