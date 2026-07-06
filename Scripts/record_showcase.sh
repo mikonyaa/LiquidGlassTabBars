@@ -28,27 +28,35 @@ xcrun simctl bootstatus "$DEVICE_ID" -b
 xcrun simctl uninstall "$DEVICE_ID" "$BUNDLE_ID" >/dev/null 2>&1 || true
 xcrun simctl install "$DEVICE_ID" "$APP"
 xcrun simctl terminate "$DEVICE_ID" "$BUNDLE_ID" >/dev/null 2>&1 || true
+xcrun simctl launch "$DEVICE_ID" "$BUNDLE_ID" >/dev/null
+sleep 2
+xcrun simctl terminate "$DEVICE_ID" "$BUNDLE_ID" >/dev/null 2>&1 || true
 xcrun simctl launch "$DEVICE_ID" "$BUNDLE_ID" --showcase
 
-sleep 1.4
-xcrun simctl io "$DEVICE_ID" screenshot "$ROOT/Assets/Screenshots/system-classic.png"
-
+sleep 1.8
 xcrun simctl io "$DEVICE_ID" recordVideo --codec=h264 --force "$RECORDING" &
 RECORDING_PID=$!
 
-sleep 2.3
-xcrun simctl io "$DEVICE_ID" screenshot "$ROOT/Assets/Screenshots/floating-graphite.png"
-
-sleep 2.6
-xcrun simctl io "$DEVICE_ID" screenshot "$ROOT/Assets/Screenshots/morphing-classic.png"
-
-sleep 3.0
+sleep 11.2
 kill -INT "$RECORDING_PID" || true
 wait "$RECORDING_PID" || true
 
 ffmpeg -y -i "$RECORDING" \
-  -filter_complex "fps=12,scale=320:-1:flags=lanczos,split[frames][palette_input];[palette_input]palettegen=max_colors=160:stats_mode=diff[palette];[frames][palette]paletteuse=dither=sierra2_4a:diff_mode=rectangle" \
+  -filter_complex "fps=20,scale=400:-1:flags=lanczos,split[frames][palette_input];[palette_input]palettegen=max_colors=192:stats_mode=diff[palette];[frames][palette]paletteuse=dither=sierra2_4a:diff_mode=rectangle" \
   -loop 0 "$GIF" >/dev/null 2>&1
+
+capture_screenshot() {
+  local output="$1"
+  shift
+  xcrun simctl terminate "$DEVICE_ID" "$BUNDLE_ID" >/dev/null 2>&1 || true
+  xcrun simctl launch "$DEVICE_ID" "$BUNDLE_ID" "$@" >/dev/null
+  sleep 1.8
+  xcrun simctl io "$DEVICE_ID" screenshot "$output" >/dev/null
+}
+
+capture_screenshot "$ROOT/Assets/Screenshots/system-classic.png"
+capture_screenshot "$ROOT/Assets/Screenshots/floating-graphite.png" --floating --graphite
+capture_screenshot "$ROOT/Assets/Screenshots/morphing-classic.png" --morphing --activity
 
 echo "GIF: $GIF"
 echo "Screenshots: $ROOT/Assets/Screenshots"

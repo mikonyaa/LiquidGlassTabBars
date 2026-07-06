@@ -2,6 +2,14 @@
 
 All notable changes will be documented here.
 
+## 1.0.1
+
+### Changed
+
+- Re-recorded the showcase at 20 fps with deterministic launch states.
+- Added smooth structural transitions without blank intermediate frames.
+- Regenerated all README screenshots from stable, non-animated states.
+
 ## 1.0.0
 
 ### Added

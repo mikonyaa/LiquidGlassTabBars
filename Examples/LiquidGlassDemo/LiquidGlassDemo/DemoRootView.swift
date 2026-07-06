@@ -1,12 +1,45 @@
 import LiquidUI
 import SwiftUI
+import UIKit
 
 struct DemoRootView: View {
-    @State private var selectedTab: DemoTab = .home
-    @State private var barStyle: DemoBarStyle = .system
-    @State private var palette: DemoPalette = .classic
+    @State private var selectedTab: DemoTab
+    @State private var barStyle: DemoBarStyle
+    @State private var palette: DemoPalette
+    @State private var transitionSnapshot: UIImage?
+    @State private var transitionSnapshotOpacity = 0.0
+    @State private var transitionID = UUID()
 
-    private let showcaseMode = ProcessInfo.processInfo.arguments.contains("--showcase")
+    private let showcaseMode: Bool
+
+    init() {
+        let arguments = ProcessInfo.processInfo.arguments
+
+        let initialTab: DemoTab
+        if arguments.contains("--activity") {
+            initialTab = .activity
+        } else if arguments.contains("--library") {
+            initialTab = .library
+        } else if arguments.contains("--profile") {
+            initialTab = .profile
+        } else {
+            initialTab = .home
+        }
+
+        let initialStyle: DemoBarStyle
+        if arguments.contains("--floating") {
+            initialStyle = .floating
+        } else if arguments.contains("--morphing") {
+            initialStyle = .morphing
+        } else {
+            initialStyle = .system
+        }
+
+        _selectedTab = State(initialValue: initialTab)
+        _barStyle = State(initialValue: initialStyle)
+        _palette = State(initialValue: arguments.contains("--graphite") ? .graphite : .classic)
+        showcaseMode = arguments.contains("--showcase")
+    }
 
     private var items: [LiquidTabItem<DemoTab>] {
         DemoTab.allCases.map(\.liquidItem)
@@ -14,6 +47,9 @@ struct DemoRootView: View {
 
     var body: some View {
         ZStack(alignment: .top) {
+            Color(red: 0.04, green: 0.045, blue: 0.052)
+                .ignoresSafeArea()
+
             if barStyle == .system {
                 systemTabs
             } else {
@@ -27,6 +63,17 @@ struct DemoRootView: View {
         .preferredColorScheme(.dark)
         .task {
             await runShowcaseIfNeeded()
+        }
+        .overlay {
+            if let transitionSnapshot {
+                Image(uiImage: transitionSnapshot)
+                    .resizable()
+                    .scaledToFill()
+                    .ignoresSafeArea()
+                    .opacity(transitionSnapshotOpacity)
+                    .allowsHitTesting(false)
+                    .accessibilityHidden(true)
+            }
         }
     }
 
@@ -88,9 +135,11 @@ struct DemoRootView: View {
         Menu {
             ForEach(DemoBarStyle.allCases) { style in
                 Button {
-                    withAnimation(.spring(response: 0.34, dampingFraction: 0.84)) {
-                        barStyle = style
-                    }
+                    changePresentation(
+                        tab: selectedTab,
+                        style: style,
+                        palette: palette
+                    )
                 } label: {
                     Label(
                         style.title,
@@ -130,50 +179,99 @@ struct DemoRootView: View {
     private func runShowcaseIfNeeded() async {
         guard showcaseMode else { return }
 
-        await pause(nanoseconds: 1_000_000_000)
+        await pause(milliseconds: 2_600)
 
         while !Task.isCancelled {
-            setShowcaseState(tab: .home, style: .system, palette: .classic)
-            await pause(nanoseconds: 1_400_000_000)
+            await pause(milliseconds: 1_600)
 
             withAnimation(.spring(response: 0.32, dampingFraction: 0.84)) {
                 selectedTab = .activity
             }
-            await pause(nanoseconds: 1_100_000_000)
+            await pause(milliseconds: 1_150)
 
-            setShowcaseState(tab: .home, style: .floating, palette: .graphite)
-            await pause(nanoseconds: 1_300_000_000)
+            changePresentation(tab: .home, style: .floating, palette: .graphite)
+            await pause(milliseconds: 1_650)
 
             withAnimation(.spring(response: 0.32, dampingFraction: 0.82)) {
                 selectedTab = .library
             }
-            await pause(nanoseconds: 1_200_000_000)
+            await pause(milliseconds: 1_150)
 
-            setShowcaseState(tab: .activity, style: .morphing, palette: .classic)
-            await pause(nanoseconds: 1_300_000_000)
+            changePresentation(tab: .activity, style: .morphing, palette: .classic)
+            await pause(milliseconds: 1_650)
 
             withAnimation(.spring(response: 0.32, dampingFraction: 0.82)) {
                 selectedTab = .profile
             }
-            await pause(nanoseconds: 1_500_000_000)
+            await pause(milliseconds: 1_150)
+
+            changePresentation(tab: .home, style: .system, palette: .classic)
+            await pause(milliseconds: 600)
         }
     }
 
     @MainActor
-    private func setShowcaseState(
+    private func changePresentation(
         tab: DemoTab,
         style: DemoBarStyle,
         palette: DemoPalette
     ) {
-        withAnimation(.easeInOut(duration: 0.32)) {
+        guard tab != selectedTab || style != barStyle || palette != self.palette else { return }
+
+        guard !UIAccessibility.isReduceMotionEnabled else {
+            selectedTab = tab
+            barStyle = style
+            self.palette = palette
+            return
+        }
+
+        let currentTransitionID = UUID()
+        transitionID = currentTransitionID
+        transitionSnapshot = LiquidWindowSnapshot.capture()
+        transitionSnapshotOpacity = 1
+
+        var transaction = Transaction()
+        transaction.disablesAnimations = true
+        withTransaction(transaction) {
             selectedTab = tab
             barStyle = style
             self.palette = palette
         }
+
+        Task { @MainActor in
+            await pause(milliseconds: 60)
+
+            guard transitionID == currentTransitionID else { return }
+
+            withAnimation(.easeInOut(duration: 0.48)) {
+                transitionSnapshotOpacity = 0
+            }
+
+            await pause(milliseconds: 520)
+
+            guard transitionID == currentTransitionID else { return }
+            transitionSnapshot = nil
+        }
     }
 
-    private func pause(nanoseconds: UInt64) async {
-        try? await Task.sleep(nanoseconds: nanoseconds)
+    private func pause(milliseconds: UInt64) async {
+        try? await Task.sleep(nanoseconds: milliseconds * 1_000_000)
+    }
+}
+
+@MainActor
+private enum LiquidWindowSnapshot {
+    static func capture() -> UIImage? {
+        let window = UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap(\.windows)
+            .first(where: \.isKeyWindow)
+
+        guard let window else { return nil }
+
+        return UIGraphicsImageRenderer(bounds: window.bounds).image { _ in
+            window.drawHierarchy(in: window.bounds, afterScreenUpdates: false)
+        }
     }
 }
 
