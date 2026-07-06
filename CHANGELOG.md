@@ -2,6 +2,15 @@
 
 All notable changes will be documented here.
 
+## 1.0.2
+
+### Changed
+
+- Unified Floating and Morphing tab bar surfaces at the same adaptive height.
+- Aligned custom bars with the native tab bar baseline in the demo.
+- Separated navigation changes from style and theme transitions for a steadier showcase.
+- Re-recorded the catalog preview with a longer, smoother loop.
+
 ## 1.0.1
 
 ### Changed

@@ -9,7 +9,7 @@ public struct LiquidTabBar<ID: Hashable & Sendable>: View {
 
     @Namespace private var selectionNamespace
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @ScaledMetric(relativeTo: .body) private var floatingHeight: CGFloat = 60
+    @ScaledMetric(relativeTo: .body) private var barHeight: CGFloat = 60
     @ScaledMetric(relativeTo: .body) private var minimumItemHeight: CGFloat = 48
 
     public init(
@@ -50,7 +50,7 @@ public struct LiquidTabBar<ID: Hashable & Sendable>: View {
         }
         .frame(height: minimumItemHeight)
         .padding(6)
-        .frame(height: floatingHeight)
+        .frame(height: barHeight)
         .liquidGlassSurface(in: Capsule(), theme: theme)
         .shadow(color: theme.shadowColor, radius: theme.shadowRadius, y: 8)
     }
@@ -104,6 +104,7 @@ public struct LiquidTabBar<ID: Hashable & Sendable>: View {
 
     @ViewBuilder
     private var morphingBar: some View {
+        #if compiler(>=6.2)
         if #available(iOS 26.0, macOS 26.0, *) {
             GlassEffectContainer(spacing: theme.itemSpacing) {
                 morphingItems
@@ -111,6 +112,9 @@ public struct LiquidTabBar<ID: Hashable & Sendable>: View {
         } else {
             morphingItems
         }
+        #else
+        morphingItems
+        #endif
     }
 
     private var morphingItems: some View {
@@ -141,7 +145,7 @@ public struct LiquidTabBar<ID: Hashable & Sendable>: View {
             }
             .foregroundStyle(isSelected ? theme.tint : theme.inactiveForeground)
             .padding(.horizontal, isSelected ? 16 : 14)
-            .frame(minWidth: minimumItemHeight, minHeight: minimumItemHeight)
+            .frame(minWidth: minimumItemHeight, minHeight: barHeight)
             .contentShape(Capsule())
         }
         .buttonStyle(.plain)
@@ -154,11 +158,15 @@ public struct LiquidTabBar<ID: Hashable & Sendable>: View {
         .accessibilityLabel(item.title)
         .accessibilityAddTraits(isSelected ? .isSelected : [])
 
+        #if compiler(>=6.2)
         if #available(iOS 26.0, macOS 26.0, *) {
             button.glassEffectID(item.id, in: selectionNamespace)
         } else {
             button
         }
+        #else
+        button
+        #endif
     }
 
     private func select(_ item: LiquidTabItem<ID>) {
