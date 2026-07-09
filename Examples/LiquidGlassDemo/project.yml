@@ -1,0 +1,60 @@
+name: LiquidGlassDemo
+
+options:
+  deploymentTarget:
+    iOS: "17.0"
+  xcodeVersion: "26.0"
+  createIntermediateGroups: true
+  generateEmptyDirectories: true
+
+configs:
+  Debug: debug
+  Release: release
+
+packages:
+  LiquidUI:
+    path: ../../Packages/LiquidUI
+
+settings:
+  base:
+    CLANG_ENABLE_MODULES: YES
+    DEVELOPMENT_TEAM: ""
+    IPHONEOS_DEPLOYMENT_TARGET: "17.0"
+    SDKROOT: iphoneos
+    SWIFT_VERSION: "6.0"
+
+targets:
+  LiquidGlassDemo:
+    type: application
+    platform: iOS
+    sources:
+      - path: LiquidGlassDemo
+    dependencies:
+      - package: LiquidUI
+        product: LiquidUI
+    info:
+      path: LiquidGlassDemo/Info.plist
+      properties:
+        CFBundleDisplayName: Liquid Glass
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        LSRequiresIPhoneOS: true
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+        UIApplicationSupportsIndirectInputEvents: true
+        UILaunchScreen: {}
+    settings:
+      base:
+        CODE_SIGN_STYLE: Automatic
+        CURRENT_PROJECT_VERSION: "1"
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: LiquidGlassDemo/Info.plist
+        MARKETING_VERSION: "0.1.0"
+        PRODUCT_BUNDLE_IDENTIFIER: dev.liquidglasstemplates.demo
+        PRODUCT_NAME: "$(TARGET_NAME)"
+        SUPPORTED_PLATFORMS: "iphoneos iphonesimulator"
+        SUPPORTS_MACCATALYST: NO
+        TARGETED_DEVICE_FAMILY: "1,2"
+    scheme:
+      configVariants: []
+      gatherCoverageData: false

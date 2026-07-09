@@ -7,45 +7,68 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A10000000000000000000013 /* LiquidUI in Frameworks */ = {isa = PBXBuildFile; productRef = A10000000000000000000018 /* LiquidUI */; };
+		0569515B836743A201DD6C74 /* DemoScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 935ABBC8D1A5681B6850DB12 /* DemoScreen.swift */; };
+		27EE1685BC2F16746AA959B5 /* LiquidUI in Frameworks */ = {isa = PBXBuildFile; productRef = 579198D22B63A6E8F83ABE39 /* LiquidUI */; };
+		31C1C3C64AEB2FC326B69DFD /* LiquidGlassDemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 472BFE74DCDCBF26C655AD75 /* LiquidGlassDemoApp.swift */; };
+		33B857BE97DA413504D4E861 /* DemoRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CE0529E2EA21EFA616CC875 /* DemoRootView.swift */; };
+		D996BED9E667A8BC1F5F98CA /* DemoModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5146AA70443494D1C81DD74B /* DemoModels.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		A10000000000000000000002 /* LiquidGlassDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LiquidGlassDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2EF4D064318DF14C18C8AC14 /* LiquidGlassDemo.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = LiquidGlassDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		40DF148A341A8D89E04D3669 /* LiquidUI */ = {isa = PBXFileReference; lastKnownFileType = folder; name = LiquidUI; path = ../../Packages/LiquidUI; sourceTree = SOURCE_ROOT; };
+		472BFE74DCDCBF26C655AD75 /* LiquidGlassDemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidGlassDemoApp.swift; sourceTree = "<group>"; };
+		5146AA70443494D1C81DD74B /* DemoModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoModels.swift; sourceTree = "<group>"; };
+		896332DA58CF6082473A5CC6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		935ABBC8D1A5681B6850DB12 /* DemoScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoScreen.swift; sourceTree = "<group>"; };
+		9CE0529E2EA21EFA616CC875 /* DemoRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoRootView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		A10000000000000000000003 /* LiquidGlassDemo */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = LiquidGlassDemo;
-			sourceTree = "<group>";
-		};
-/* End PBXFileSystemSynchronizedRootGroup section */
-
 /* Begin PBXFrameworksBuildPhase section */
-		A10000000000000000000006 /* Frameworks */ = {
+		BE005B24EF4452C763977975 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A10000000000000000000013 /* LiquidUI in Frameworks */,
+				27EE1685BC2F16746AA959B5 /* LiquidUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		A10000000000000000000001 = {
+		33C8BF0669EEB6741E56DA59 = {
 			isa = PBXGroup;
 			children = (
-				A10000000000000000000003 /* LiquidGlassDemo */,
-				A10000000000000000000004 /* Products */,
+				51C5E486EA0546A1ACB1D372 /* LiquidGlassDemo */,
+				6616C3103AACF79DB94267CA /* Packages */,
+				9CD65CA7D4FC892443B50FDE /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		A10000000000000000000004 /* Products */ = {
+		51C5E486EA0546A1ACB1D372 /* LiquidGlassDemo */ = {
 			isa = PBXGroup;
 			children = (
-				A10000000000000000000002 /* LiquidGlassDemo.app */,
+				5146AA70443494D1C81DD74B /* DemoModels.swift */,
+				9CE0529E2EA21EFA616CC875 /* DemoRootView.swift */,
+				935ABBC8D1A5681B6850DB12 /* DemoScreen.swift */,
+				896332DA58CF6082473A5CC6 /* Info.plist */,
+				472BFE74DCDCBF26C655AD75 /* LiquidGlassDemoApp.swift */,
+			);
+			path = LiquidGlassDemo;
+			sourceTree = "<group>";
+		};
+		6616C3103AACF79DB94267CA /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				40DF148A341A8D89E04D3669 /* LiquidUI */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		9CD65CA7D4FC892443B50FDE /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2EF4D064318DF14C18C8AC14 /* LiquidGlassDemo.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -53,151 +76,230 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		A10000000000000000000005 /* LiquidGlassDemo */ = {
+		A38925257B9270A399BFE0E3 /* LiquidGlassDemo */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A1000000000000000000000F /* Build configuration list for PBXNativeTarget "LiquidGlassDemo" */;
+			buildConfigurationList = 2237AE8A99B0985B59237780 /* Build configuration list for PBXNativeTarget "LiquidGlassDemo" */;
 			buildPhases = (
-				A10000000000000000000007 /* Sources */,
-				A10000000000000000000006 /* Frameworks */,
-				A10000000000000000000008 /* Resources */,
+				D5E4FE53D50382A557D2029A /* Sources */,
+				BE005B24EF4452C763977975 /* Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			fileSystemSynchronizedGroups = (
-				A10000000000000000000003 /* LiquidGlassDemo */,
-			);
 			name = LiquidGlassDemo;
 			packageProductDependencies = (
-				A10000000000000000000018 /* LiquidUI */,
+				579198D22B63A6E8F83ABE39 /* LiquidUI */,
 			);
 			productName = LiquidGlassDemo;
-			productReference = A10000000000000000000002 /* LiquidGlassDemo.app */;
+			productReference = 2EF4D064318DF14C18C8AC14 /* LiquidGlassDemo.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		A10000000000000000000009 /* Project object */ = {
+		13D883407EA80B13C76AD185 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 2650;
-				LastUpgradeCheck = 2650;
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 2600;
 				TargetAttributes = {
-					A10000000000000000000005 = {
-						CreatedOnToolsVersion = 26.5;
+					A38925257B9270A399BFE0E3 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
-			buildConfigurationList = A1000000000000000000000C /* Build configuration list for PBXProject "LiquidGlassDemo" */;
+			buildConfigurationList = 52E7475ADCFA4F69558B3F48 /* Build configuration list for PBXProject "LiquidGlassDemo" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				en,
 				Base,
+				en,
 			);
-			mainGroup = A10000000000000000000001;
+			mainGroup = 33C8BF0669EEB6741E56DA59;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				A10000000000000000000017 /* XCLocalSwiftPackageReference "LiquidUI" */,
+				7EAEFE94123F772F1E5AFEAA /* XCLocalSwiftPackageReference "../../Packages/LiquidUI" */,
 			);
 			preferredProjectObjectVersion = 77;
-			productRefGroup = A10000000000000000000004 /* Products */;
+			productRefGroup = 9CD65CA7D4FC892443B50FDE /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				A10000000000000000000005 /* LiquidGlassDemo */,
+				A38925257B9270A399BFE0E3 /* LiquidGlassDemo */,
 			);
 		};
 /* End PBXProject section */
 
-/* Begin PBXResourcesBuildPhase section */
-		A10000000000000000000008 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXResourcesBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
-		A10000000000000000000007 /* Sources */ = {
+		D5E4FE53D50382A557D2029A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D996BED9E667A8BC1F5F98CA /* DemoModels.swift in Sources */,
+				33B857BE97DA413504D4E861 /* DemoRootView.swift in Sources */,
+				0569515B836743A201DD6C74 /* DemoScreen.swift in Sources */,
+				31C1C3C64AEB2FC326B69DFD /* LiquidGlassDemoApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		A1000000000000000000000A /* Debug */ = {
+		1D9DDB412464AC91C621DC3B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = LiquidGlassDemo/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.liquidglasstemplates.demo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		427A838A651FBD33D295B20C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
 					"$(inherited)",
+					"DEBUG=1",
 				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
 			};
 			name = Debug;
 		};
-		A1000000000000000000000B /* Release */ = {
+		551753269189AC9103F03889 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				COPY_PHASE_STRIP = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
-				VALIDATE_PRODUCT = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
 			};
 			name = Release;
 		};
-		A1000000000000000000000D /* Debug */ = {
+		A7F14861F61204DF90A239E2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = LiquidGlassDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -205,76 +307,49 @@
 				MARKETING_VERSION = 0.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.liquidglasstemplates.demo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
-		};
-		A1000000000000000000000E /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				MARKETING_VERSION = 0.1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = dev.liquidglasstemplates.demo;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		A1000000000000000000000C /* Build configuration list for PBXProject "LiquidGlassDemo" */ = {
+		2237AE8A99B0985B59237780 /* Build configuration list for PBXNativeTarget "LiquidGlassDemo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				A1000000000000000000000A /* Debug */,
-				A1000000000000000000000B /* Release */,
+				A7F14861F61204DF90A239E2 /* Debug */,
+				1D9DDB412464AC91C621DC3B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
-		A1000000000000000000000F /* Build configuration list for PBXNativeTarget "LiquidGlassDemo" */ = {
+		52E7475ADCFA4F69558B3F48 /* Build configuration list for PBXProject "LiquidGlassDemo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				A1000000000000000000000D /* Debug */,
-				A1000000000000000000000E /* Release */,
+				427A838A651FBD33D295B20C /* Debug */,
+				551753269189AC9103F03889 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		A10000000000000000000017 /* XCLocalSwiftPackageReference "LiquidUI" */ = {
+		7EAEFE94123F772F1E5AFEAA /* XCLocalSwiftPackageReference "../../Packages/LiquidUI" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../../Packages/LiquidUI;
 		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		A10000000000000000000018 /* LiquidUI */ = {
+		579198D22B63A6E8F83ABE39 /* LiquidUI */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = A10000000000000000000017 /* XCLocalSwiftPackageReference "LiquidUI" */;
 			productName = LiquidUI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
-	rootObject = A10000000000000000000009 /* Project object */;
+	rootObject = 13D883407EA80B13C76AD185 /* Project object */;
 }

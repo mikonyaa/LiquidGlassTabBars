@@ -61,10 +61,31 @@ open Examples/LiquidGlassDemo/LiquidGlassDemo.xcodeproj
 
 Choose the `LiquidGlassDemo` scheme and an iOS Simulator, then run with `⌘R`. Use the two menus at the top of the demo to switch the tab bar style and background.
 
+Optional: regenerate the Xcode project with XcodeGen if you prefer a generated project workflow:
+
+```bash
+cd Examples/LiquidGlassDemo
+xcodegen generate
+open LiquidGlassDemo.xcodeproj
+```
+
+XcodeGen is not required. The checked-in `.xcodeproj` remains the default path for beginners.
+
 Run package tests:
 
 ```bash
 swift test
+```
+
+Compile the demo app from Terminal:
+
+```bash
+xcodebuild \
+  -project Examples/LiquidGlassDemo/LiquidGlassDemo.xcodeproj \
+  -scheme LiquidGlassDemo \
+  -destination 'generic/platform=iOS Simulator' \
+  CODE_SIGNING_ALLOWED=NO \
+  build
 ```
 
 ## Add LiquidUI to another project
