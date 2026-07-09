@@ -10,7 +10,7 @@ The roadmap is directional. Small, finished releases take priority over a large 
 - [x] Morphing custom tab bar.
 - [x] Configurable themes and accessibility fallbacks.
 - [x] Runnable Xcode demo.
-- [x] Beginner documentation and AI learning prompt.
+- [x] Beginner documentation.
 - [x] Simulator screenshots and final GIF.
 - [x] CI verification on the release Xcode version.
 

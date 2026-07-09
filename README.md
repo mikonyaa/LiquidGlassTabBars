@@ -40,7 +40,6 @@ The first release starts with tab navigation because it demonstrates the most im
 - Dynamic Type, Reduce Motion, and Reduce Transparency support.
 - Deterministic previews and unit tests.
 - English and Russian documentation.
-- A ready-to-paste AI learning prompt for beginners.
 
 ## Requirements
 
@@ -220,11 +219,8 @@ Read the full [Design Principles](Docs/DesignPrinciples.md).
 - [Architecture](Docs/Architecture.md)
 - [Getting Started](Docs/GettingStarted.md)
 - [Customization](Docs/Customization.md)
-- [AI Learning Prompt](Docs/LearningPrompt.md)
 - [Template Quality Checklist](Docs/TemplateQuality.md)
 - [GitHub Launch Checklist](Docs/GitHubLaunchChecklist.md)
-
-The learning prompt asks an AI assistant to explain the repository file by file, cite real code, avoid invented APIs, and teach at the reader's level.
 
 ## Roadmap
 

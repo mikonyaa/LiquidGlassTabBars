@@ -31,5 +31,4 @@ All notable changes will be documented here.
 - Accessibility-aware motion and transparency behavior.
 - Runnable `LiquidGlassDemo` Xcode project.
 - English and Russian getting-started documentation.
-- Beginner-oriented AI learning prompt.
 - Reproducible simulator screenshots and GIF recording script.
