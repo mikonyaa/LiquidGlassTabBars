@@ -18,10 +18,10 @@
 		2EF4D064318DF14C18C8AC14 /* LiquidGlassDemo.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = LiquidGlassDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		472BFE74DCDCBF26C655AD75 /* LiquidGlassDemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidGlassDemoApp.swift; sourceTree = "<group>"; };
 		5146AA70443494D1C81DD74B /* DemoModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoModels.swift; sourceTree = "<group>"; };
+		80E2A66843B52B9D0CAE9FE2 /* LiquidGlassTabBars */ = {isa = PBXFileReference; lastKnownFileType = folder; name = LiquidGlassTabBars; path = ../..; sourceTree = SOURCE_ROOT; };
 		896332DA58CF6082473A5CC6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		935ABBC8D1A5681B6850DB12 /* DemoScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoScreen.swift; sourceTree = "<group>"; };
 		9CE0529E2EA21EFA616CC875 /* DemoRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoRootView.swift; sourceTree = "<group>"; };
-		CC702AE606A954252996D924 /* liquid-tabs-hardening */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "liquid-tabs-hardening"; path = ../..; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,7 +60,7 @@
 		6616C3103AACF79DB94267CA /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				CC702AE606A954252996D924 /* liquid-tabs-hardening */,
+				80E2A66843B52B9D0CAE9FE2 /* LiquidGlassTabBars */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
