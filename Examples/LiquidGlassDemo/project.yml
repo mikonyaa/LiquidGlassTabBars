@@ -13,7 +13,7 @@ configs:
 
 packages:
   LiquidUI:
-    path: ../../Packages/LiquidUI
+    path: ../..
 
 settings:
   base:
@@ -49,7 +49,7 @@ targets:
         CURRENT_PROJECT_VERSION: "1"
         GENERATE_INFOPLIST_FILE: NO
         INFOPLIST_FILE: LiquidGlassDemo/Info.plist
-        MARKETING_VERSION: "0.1.0"
+        MARKETING_VERSION: "1.0.3"
         PRODUCT_BUNDLE_IDENTIFIER: dev.liquidglasstemplates.demo
         PRODUCT_NAME: "$(TARGET_NAME)"
         SUPPORTED_PLATFORMS: "iphoneos iphonesimulator"

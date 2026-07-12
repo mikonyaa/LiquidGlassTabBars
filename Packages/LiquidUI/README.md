@@ -1,6 +1,6 @@
 # LiquidUI
 
-`LiquidUI` is the reusable Swift Package inside Liquid Glass Tab Bars.
+`LiquidUI` is the reusable product exposed by the repository's root Swift Package.
 
 ## Products
 
@@ -11,7 +11,7 @@
 
 ## Local package
 
-Add this folder through Xcode's **Add Local Package** command, then import it:
+Add the repository root through Xcode's **Add Local Package** command, then import it:
 
 ```swift
 import LiquidUI
@@ -31,10 +31,9 @@ ContentView()
     }
 ```
 
-## Standalone validation
+## Validation
 
 ```bash
-cd Packages/LiquidUI
 swift test
 ```
 

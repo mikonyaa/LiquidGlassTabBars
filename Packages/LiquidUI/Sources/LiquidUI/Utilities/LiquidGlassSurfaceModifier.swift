@@ -10,7 +10,9 @@ struct LiquidGlassSurfaceModifier<SurfaceShape: Shape>: ViewModifier {
 
     @ViewBuilder
     func body(content: Content) -> some View {
-        if reduceTransparency {
+        if LiquidAccessibilityBehavior.usesOpaqueSurface(
+            reduceTransparency: reduceTransparency
+        ) {
             content
                 .background(theme.fallbackFill, in: shape)
                 .overlay { shape.stroke(theme.fallbackBorder, lineWidth: 1) }

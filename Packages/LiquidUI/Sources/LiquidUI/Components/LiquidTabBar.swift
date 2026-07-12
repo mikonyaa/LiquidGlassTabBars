@@ -170,12 +170,15 @@ public struct LiquidTabBar<ID: Hashable & Sendable>: View {
     }
 
     private func select(_ item: LiquidTabItem<ID>) {
-        if selection == item.id {
+        if LiquidTabSelection.isReselection(current: selection, candidate: item.id) {
             onReselect?(item.id)
             return
         }
 
-        withAnimation(reduceMotion ? nil : .spring(response: 0.32, dampingFraction: 0.82)) {
+        let animation = LiquidAccessibilityBehavior.animatesSelection(reduceMotion: reduceMotion)
+            ? Animation.spring(response: 0.32, dampingFraction: 0.82)
+            : nil
+        withAnimation(animation) {
             selection = item.id
         }
     }

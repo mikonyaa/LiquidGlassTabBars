@@ -91,7 +91,7 @@ xcodebuild \
 
 Add `https://github.com/mikonyaa/LiquidGlassTabBars.git` in Xcode through **File → Add Package Dependencies**, then select the `LiquidUI` product.
 
-For a local checkout, drag `Packages/LiquidUI` into Xcode or add that folder as a local package.
+For a local checkout, add the repository root as a local package. The root `Package.swift` is the single authoritative manifest.
 
 ### Native system tab bar
 
@@ -139,6 +139,8 @@ LiquidTabBar(
 ```
 
 Change `variant` to `.morphing` for the expanding control layout.
+
+Custom Floating and Morphing bars are designed and tested for two to five primary destinations. For a larger information architecture, use `SystemGlassTabView` so the platform can manage overflow, adaptation, and accessibility behavior.
 
 Place a custom bar in a bottom safe-area inset so scrolling content is never covered:
 
@@ -191,7 +193,6 @@ See [Customization](Docs/Customization.md) for the reasoning behind each value.
 LiquidGlassTabBars/
 ├── Package.swift
 ├── Packages/LiquidUI/
-│   ├── Package.swift
 │   ├── Sources/LiquidUI/
 │   └── Tests/LiquidUITests/
 ├── Examples/LiquidGlassDemo/
@@ -224,7 +225,7 @@ Read the full [Design Principles](Docs/DesignPrinciples.md).
 
 ## Roadmap
 
-See [ROADMAP.md](ROADMAP.md). Planned additions include more navigation patterns, settings, onboarding, paywalls, macOS menu bar templates, and adaptive iPad layouts.
+See [ROADMAP.md](ROADMAP.md). Follow-ups remain deliberately focused on adjacent navigation controls and platform review; broader app templates stay in their own repositories.
 
 ## Contributing
 

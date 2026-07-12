@@ -12,7 +12,7 @@ let tabs = [
 ]
 ```
 
-Keep the number of primary destinations small. If everything becomes a tab, the hierarchy is probably unclear.
+Custom Floating and Morphing variants support two to five primary destinations. If the product needs more, use `SystemGlassTabView`; if everything becomes a tab, the hierarchy is probably unclear.
 
 ## Change the palette
 

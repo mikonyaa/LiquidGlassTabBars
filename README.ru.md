@@ -13,7 +13,7 @@
 - Fallback для iOS 17–25.
 - Поддержка Dynamic Type, Reduce Motion и Reduce Transparency.
 - Готовое приложение `LiquidGlassDemo.xcodeproj`.
-- Swift Package `LiquidUI` без внешних зависимостей.
+- Swift Package `LiquidUI` без внешних зависимостей и единственным root `Package.swift`.
 - Тесты, previews и обучающая документация.
 
 ## Запуск
@@ -44,6 +44,8 @@ LiquidTabBar(
 ```
 
 Замените `.floating` на `.morphing`, чтобы получить раскрывающуюся активную вкладку.
+
+Custom Floating и Morphing варианты рассчитаны на 2–5 основных разделов. Для большего количества используйте `SystemGlassTabView`, чтобы overflow и adaptation оставались системными.
 
 Если приоритетом являются системное поведение и автоматическая адаптация, используйте `SystemGlassTabView`. На iOS 26 стекло такого tab bar рисует сама система через обычный SwiftUI `TabView`.
 

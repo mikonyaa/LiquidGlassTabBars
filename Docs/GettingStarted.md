@@ -4,7 +4,7 @@
 
 Open `Examples/LiquidGlassDemo/LiquidGlassDemo.xcodeproj` in Xcode 26 or newer.
 
-The project uses the local package at `Packages/LiquidUI`. Xcode resolves it automatically; no network download is required.
+The project uses the repository root package. Xcode resolves it automatically; no network download is required.
 
 Select:
 
@@ -32,7 +32,7 @@ In another Xcode project:
 
 1. Choose **File → Add Package Dependencies**.
 2. Click **Add Local**.
-3. Select `Packages/LiquidUI`.
+3. Select the `LiquidGlassTabBars` repository root.
 4. Add the `LiquidUI` product to the app target.
 5. Write `import LiquidUI` in the consuming file.
 
@@ -46,6 +46,8 @@ Use `LiquidTabBar` when the app specifically needs:
 - a selected label that appears only for the active tab;
 - a morphing group of compact controls;
 - a product-specific placement or visual rhythm.
+
+Keep custom bars between two and five items. For more destinations, use `SystemGlassTabView` and let the system own overflow and adaptation.
 
 ## 5. Verify accessibility
 

@@ -2,6 +2,16 @@
 
 All notable changes will be documented here.
 
+## 1.0.3
+
+### Changed
+
+- Made the root `Package.swift` the only package manifest and pointed the demo at it.
+- Added selection and reselection coverage plus two-, three-, and five-item rendering tests.
+- Added accessibility coverage for Reduce Motion, Reduce Transparency, and accessibility Dynamic Type policies.
+- Documented the two-to-five-item scope for custom bars and the system-tab recommendation for larger sets.
+- Aligned package and demo version metadata with `1.0.3`.
+
 ## 1.0.2
 
 ### Changed

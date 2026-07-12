@@ -18,4 +18,9 @@ final class LiquidTabItemTests: XCTestCase {
         XCTAssertEqual(LiquidTabBarVariant.floating.rawValue, "floating")
         XCTAssertEqual(LiquidTabBarVariant.morphing.rawValue, "morphing")
     }
+
+    func testSelectionAndReselectionAreDistinguished() {
+        XCTAssertFalse(LiquidTabSelection.isReselection(current: "home", candidate: "activity"))
+        XCTAssertTrue(LiquidTabSelection.isReselection(current: "home", candidate: "home"))
+    }
 }

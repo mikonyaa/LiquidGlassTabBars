@@ -16,12 +16,12 @@
 
 /* Begin PBXFileReference section */
 		2EF4D064318DF14C18C8AC14 /* LiquidGlassDemo.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = LiquidGlassDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		40DF148A341A8D89E04D3669 /* LiquidUI */ = {isa = PBXFileReference; lastKnownFileType = folder; name = LiquidUI; path = ../../Packages/LiquidUI; sourceTree = SOURCE_ROOT; };
 		472BFE74DCDCBF26C655AD75 /* LiquidGlassDemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidGlassDemoApp.swift; sourceTree = "<group>"; };
 		5146AA70443494D1C81DD74B /* DemoModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoModels.swift; sourceTree = "<group>"; };
 		896332DA58CF6082473A5CC6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		935ABBC8D1A5681B6850DB12 /* DemoScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoScreen.swift; sourceTree = "<group>"; };
 		9CE0529E2EA21EFA616CC875 /* DemoRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoRootView.swift; sourceTree = "<group>"; };
+		CC702AE606A954252996D924 /* liquid-tabs-hardening */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "liquid-tabs-hardening"; path = ../..; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,7 +60,7 @@
 		6616C3103AACF79DB94267CA /* Packages */ = {
 			isa = PBXGroup;
 			children = (
-				40DF148A341A8D89E04D3669 /* LiquidUI */,
+				CC702AE606A954252996D924 /* liquid-tabs-hardening */,
 			);
 			name = Packages;
 			sourceTree = "<group>";
@@ -120,7 +120,7 @@
 			mainGroup = 33C8BF0669EEB6741E56DA59;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				7EAEFE94123F772F1E5AFEAA /* XCLocalSwiftPackageReference "../../Packages/LiquidUI" */,
+				B876E983E762270AA8B142D1 /* XCLocalSwiftPackageReference "../.." */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 9CD65CA7D4FC892443B50FDE /* Products */;
@@ -160,7 +160,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1.0;
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.liquidglasstemplates.demo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -304,7 +304,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1.0;
+				MARKETING_VERSION = 1.0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.liquidglasstemplates.demo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -338,9 +338,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		7EAEFE94123F772F1E5AFEAA /* XCLocalSwiftPackageReference "../../Packages/LiquidUI" */ = {
+		B876E983E762270AA8B142D1 /* XCLocalSwiftPackageReference "../.." */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = ../../Packages/LiquidUI;
+			relativePath = ../..;
 		};
 /* End XCLocalSwiftPackageReference section */
 
