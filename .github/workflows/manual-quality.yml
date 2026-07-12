@@ -35,7 +35,7 @@ jobs:
             "https://github.com/yonaskolb/XcodeGen/releases/download/${XCODEGEN_VERSION}/xcodegen.zip" \
             --output "$RUNNER_TEMP/xcodegen.zip"
           unzip -q "$RUNNER_TEMP/xcodegen.zip" -d "$RUNNER_TEMP/xcodegen"
-          echo "$RUNNER_TEMP/xcodegen/bin" >> "$GITHUB_PATH"
+          echo "$RUNNER_TEMP/xcodegen/xcodegen/bin" >> "$GITHUB_PATH"
       - name: Reproduce checked-in project
         run: |
           test "$(xcodegen --version | awk '{print $2}')" = "$XCODEGEN_VERSION"
