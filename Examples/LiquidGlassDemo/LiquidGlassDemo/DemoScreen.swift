@@ -3,6 +3,8 @@ import SwiftUI
 struct DemoScreen: View {
     let tab: DemoTab
     let palette: DemoPalette
+    @Binding var fixture: DemoFixture
+    @State private var isCreatePresented = false
 
     var body: some View {
         ZStack {
@@ -21,6 +23,9 @@ struct DemoScreen: View {
                 .padding(.bottom, 24)
             }
             .scrollIndicators(.hidden)
+        }
+        .sheet(isPresented: $isCreatePresented) {
+            CreateSampleSheet { fixture.sampleTitle = $0 }
         }
     }
 
@@ -51,23 +56,26 @@ struct DemoScreen: View {
                     .stroke(.white.opacity(0.10), lineWidth: 8)
 
                 Circle()
-                    .trim(from: 0, to: 0.72)
+                    .trim(from: 0, to: fixture.fraction)
                     .stroke(
                         palette.theme.tint,
                         style: StrokeStyle(lineWidth: 8, lineCap: .round)
                     )
                     .rotationEffect(.degrees(-90))
 
-                Text("72%")
+                Text("\(fixture.percentage)%")
                     .font(.headline.monospacedDigit())
             }
             .frame(width: 82, height: 82)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("Sample progress")
+            .accessibilityValue("\(fixture.percentage)%")
 
             VStack(alignment: .leading, spacing: 6) {
                 Text("Today")
                     .font(.title3.bold())
 
-                Text("Three of five items complete")
+                Text(fixture.progressDescription)
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
 
@@ -87,16 +95,34 @@ struct DemoScreen: View {
     }
 
     private var quickActions: some View {
-        HStack(spacing: 12) {
-            DemoAction(title: "Create", systemImage: "plus")
-            DemoAction(title: "Focus", systemImage: "timer")
-            DemoAction(title: "Share", systemImage: "square.and.arrow.up")
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Local sample controls — changes last until you close the app.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            HStack(spacing: 12) {
+                DemoAction(title: "Create", systemImage: "plus") { isCreatePresented = true }
+                DemoAction(title: fixture.isFocusActive ? "End focus" : "Focus", systemImage: "timer") {
+                    fixture.isFocusActive.toggle()
+                }
+                ShareLink(item: fixture.shareText) {
+                    DemoActionLabel(title: "Share", systemImage: "square.and.arrow.up")
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Share")
+            }
+            Text(fixture.isFocusActive ? "Focus preview is on" : "Focus preview is off")
+                .font(.caption)
+                .foregroundStyle(fixture.isFocusActive ? palette.theme.tint : .secondary)
+            if let sampleTitle = fixture.sampleTitle {
+                Label(sampleTitle, systemImage: "checkmark.circle")
+                    .font(.subheadline)
+            }
         }
     }
 
     private var recentSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Recent")
+            Text("Recent · sample content")
                 .font(.headline)
 
             VStack(spacing: 0) {
@@ -123,25 +149,59 @@ struct DemoScreen: View {
 private struct DemoAction: View {
     let title: String
     let systemImage: String
+    let action: () -> Void
 
     var body: some View {
-        Button {} label: {
-            VStack(spacing: 8) {
-                Image(systemName: systemImage)
-                    .font(.headline)
-
-                Text(title)
-                    .font(.caption.weight(.semibold))
-            }
-            .frame(maxWidth: .infinity)
-            .frame(height: 76)
-            .background(.white.opacity(0.065), in: RoundedRectangle(cornerRadius: 22))
-            .overlay {
-                RoundedRectangle(cornerRadius: 22)
-                    .stroke(.white.opacity(0.09), lineWidth: 0.75)
-            }
+        Button(action: action) {
+            DemoActionLabel(title: title, systemImage: systemImage)
         }
         .buttonStyle(.plain)
+    }
+}
+
+private struct DemoActionLabel: View {
+    let title: String
+    let systemImage: String
+
+    var body: some View {
+        VStack(spacing: 8) {
+            Image(systemName: systemImage).font(.headline)
+            Text(title).font(.caption.weight(.semibold))
+        }
+        .frame(maxWidth: .infinity)
+        .frame(minHeight: 76)
+        .background(.white.opacity(0.065), in: RoundedRectangle(cornerRadius: 22))
+        .overlay {
+            RoundedRectangle(cornerRadius: 22).stroke(.white.opacity(0.09), lineWidth: 0.75)
+        }
+    }
+}
+
+private struct CreateSampleSheet: View {
+    let save: (String) -> Void
+    @Environment(\.dismiss) private var dismiss
+    @State private var title = ""
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Text("Create a local preview sample. Nothing is sent or saved permanently.")
+                TextField("Sample title", text: $title)
+            }
+            .navigationTitle("Create sample")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save sample") {
+                        save(title.trimmingCharacters(in: .whitespacesAndNewlines))
+                        dismiss()
+                    }
+                    .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                }
+            }
+        }
     }
 }
 

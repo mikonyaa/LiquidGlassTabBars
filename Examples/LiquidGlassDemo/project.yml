@@ -58,12 +58,73 @@ targets:
         CURRENT_PROJECT_VERSION: "1"
         GENERATE_INFOPLIST_FILE: NO
         INFOPLIST_FILE: LiquidGlassDemo/Info.plist
-        MARKETING_VERSION: "1.0.3"
+        MARKETING_VERSION: "1.0.4"
         PRODUCT_BUNDLE_IDENTIFIER: dev.liquidglasstemplates.demo
         PRODUCT_NAME: "$(TARGET_NAME)"
         SUPPORTED_PLATFORMS: "iphoneos iphonesimulator"
         SUPPORTS_MACCATALYST: NO
         TARGETED_DEVICE_FAMILY: "1,2"
-    scheme:
-      configVariants: []
+  IntegrationHost:
+    type: application
+    platform: iOS
+    sources: [IntegrationHost]
+    dependencies:
+      - package: LiquidUI
+        product: LiquidUI
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: dev.liquidglasstemplates.integration
+        TARGETED_DEVICE_FAMILY: "1,2"
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+  IntegrationTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources: [IntegrationTests]
+    dependencies:
+      - target: IntegrationHost
+      - package: LiquidUI
+        product: LiquidUI
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: dev.liquidglasstemplates.integration-tests
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/IntegrationHost.app/IntegrationHost"
+        BUNDLE_LOADER: "$(TEST_HOST)"
+  IntegrationUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources: [IntegrationUITests]
+    dependencies:
+      - target: IntegrationHost
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: dev.liquidglasstemplates.integration-ui-tests
+        TEST_TARGET_NAME: IntegrationHost
+  DemoUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - DemoUITests
+      - IntegrationUITests/AccessibilitySettings.swift
+    dependencies:
+      - target: LiquidGlassDemo
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: dev.liquidglasstemplates.demo-ui-tests
+        TEST_TARGET_NAME: LiquidGlassDemo
+
+schemes:
+  LiquidGlassDemo:
+    build:
+      targets:
+        LiquidGlassDemo: all
+        IntegrationHost: [test]
+    test:
+      targets:
+        - IntegrationTests
+        - IntegrationUITests
+        - DemoUITests
       gatherCoverageData: false

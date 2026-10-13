@@ -14,6 +14,10 @@ let tabs = [
 
 Custom Floating and Morphing variants support two to five primary destinations. If the product needs more, use `SystemGlassTabView`; if everything becomes a tab, the hierarchy is probably unclear.
 
+IDs must be unique and stable. Selection must belong to the current items; the app owns any selection update when items change. No automatic repair or persistence is performed. An empty items array renders nothing; invalid selection highlights nothing.
+
+For 2–5 items, provide at least 320 pt after outer padding. Morphing measures the expanding row first and uses equal-width individual capsules when it cannot fit. Compact spacing is capped at 8 pt to keep hit targets separate. Selected titles may truncate visually; VoiceOver receives the full title. Dynamic Type scales text and height in both layouts. Below 320 pt, use the system variant or validate your specific placement separately.
+
 ## Change the palette
 
 `LiquidTabBarTheme` exposes only values that materially affect the controls:
@@ -22,7 +26,7 @@ Custom Floating and Morphing variants support two to five primary destinations. 
 | --- | --- |
 | `tint` | Selected item and meaningful emphasis |
 | `inactiveForeground` | Unselected symbols and labels |
-| `fallbackFill` | Opaque surface for Reduce Transparency |
+| `fallbackFill` | Color composited over opaque adaptive system backing in Reduce Transparency |
 | `fallbackBorder` | Separation on material and opaque surfaces |
 | `selectedFillOpacity` | Selected pill strength in Floating |
 | `selectedBorderOpacity` | Selected pill edge strength |
@@ -31,6 +35,8 @@ Custom Floating and Morphing variants support two to five primary destinations. 
 | `itemSpacing` | Distance and morph threshold in Morphing |
 
 Prefer semantic colors where possible. Test custom colors over both bright and dark content.
+
+The backing uses `secondarySystemBackground` on iOS and `controlBackgroundColor` on macOS. A translucent `fallbackFill` blends with that backing, not the content underneath. Violet and Ocean are fully opaque in reduced-transparency mode despite their preset alpha. The initializer and all existing theme parameters remain source compatible. Normal glass/material mode is unaffected.
 
 ## Change corner shapes
 
@@ -46,7 +52,7 @@ Selection uses one spring:
 .spring(response: 0.32, dampingFraction: 0.82)
 ```
 
-Adjust it in small increments. A tab switch should communicate state, not delay navigation. The animation is automatically removed when Reduce Motion is enabled.
+Adjust it in small increments. A tab switch should communicate state, not delay navigation. Reduce Motion removes the spring transaction and disables descendant animations. Native morphing IDs are omitted in this mode. The normal spring remains when Reduce Motion is off. The integration host records the actual binding transaction rather than testing only a policy helper.
 
 ## Add reselect behavior
 

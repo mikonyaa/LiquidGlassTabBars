@@ -6,6 +6,7 @@ struct DemoRootView: View {
     @State private var selectedTab: DemoTab
     @State private var barStyle: DemoBarStyle
     @State private var palette: DemoPalette
+    @State private var fixture = DemoFixture()
     @State private var transitionSnapshot: UIImage?
     @State private var transitionSnapshotOpacity = 0.0
     @State private var transitionID = UUID()
@@ -91,7 +92,7 @@ struct DemoRootView: View {
             tint: palette.theme.tint
         ) {
             ForEach(DemoTab.allCases) { tab in
-                DemoScreen(tab: tab, palette: palette)
+                DemoScreen(tab: tab, palette: palette, fixture: $fixture)
                     .tabItem {
                         Label(tab.title, systemImage: tab.systemImage)
                     }
@@ -101,7 +102,7 @@ struct DemoRootView: View {
     }
 
     private var customTabs: some View {
-        DemoScreen(tab: selectedTab, palette: palette)
+        DemoScreen(tab: selectedTab, palette: palette, fixture: $fixture)
             .safeAreaInset(edge: .bottom, spacing: 0) {
                 LiquidTabBar(
                     selection: $selectedTab,

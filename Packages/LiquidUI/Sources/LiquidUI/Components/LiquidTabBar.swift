@@ -12,6 +12,8 @@ public struct LiquidTabBar<ID: Hashable & Sendable>: View {
     @ScaledMetric(relativeTo: .body) private var barHeight: CGFloat = 60
     @ScaledMetric(relativeTo: .body) private var minimumItemHeight: CGFloat = 48
 
+    /// Items must have unique, stable IDs and selection must identify one of them.
+    /// The caller owns selection, including changes to the available destinations.
     public init(
         selection: Binding<ID>,
         items: [LiquidTabItem<ID>],
@@ -40,6 +42,12 @@ public struct LiquidTabBar<ID: Hashable & Sendable>: View {
             }
         }
         .accessibilityElement(children: .contain)
+        .transaction { transaction in
+            if reduceMotion {
+                transaction.animation = nil
+                transaction.disablesAnimations = true
+            }
+        }
     }
 
     private var floatingBar: some View {
@@ -93,7 +101,7 @@ public struct LiquidTabBar<ID: Hashable & Sendable>: View {
                 .padding(.horizontal, 6)
                 .padding(.vertical, 6)
             }
-            .frame(maxWidth: .infinity)
+            .frame(minWidth: 44, maxWidth: .infinity)
             .frame(height: minimumItemHeight)
             .contentShape(Rectangle())
         }
@@ -118,34 +126,38 @@ public struct LiquidTabBar<ID: Hashable & Sendable>: View {
     }
 
     private var morphingItems: some View {
-        HStack(spacing: theme.itemSpacing) {
-            ForEach(items) { item in
-                morphingButton(for: item)
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: theme.itemSpacing) {
+                ForEach(items) { item in
+                    morphingButton(for: item, compact: false)
+                }
             }
+            .fixedSize(horizontal: true, vertical: false)
+
+            HStack(spacing: min(max(theme.itemSpacing, 0), 8)) {
+                ForEach(items) { item in
+                    morphingButton(for: item, compact: true)
+                }
+            }
+            .frame(maxWidth: .infinity)
         }
         .shadow(color: theme.shadowColor, radius: theme.shadowRadius, y: 8)
     }
 
     @ViewBuilder
-    private func morphingButton(for item: LiquidTabItem<ID>) -> some View {
+    private func morphingButton(for item: LiquidTabItem<ID>, compact: Bool) -> some View {
         let isSelected = selection == item.id
         let button = Button {
             select(item)
         } label: {
-            HStack(spacing: 7) {
-                Image(systemName: item.systemImage)
-                    .font(.system(size: 18, weight: .semibold))
-
-                if isSelected {
-                    Text(item.title)
-                        .font(.subheadline.weight(.semibold))
-                        .lineLimit(1)
-                        .transition(.opacity.combined(with: .scale(scale: 0.92)))
-                }
-            }
+            morphingLabel(for: item, isSelected: isSelected, compact: compact)
             .foregroundStyle(isSelected ? theme.tint : theme.inactiveForeground)
-            .padding(.horizontal, isSelected ? 16 : 14)
-            .frame(minWidth: minimumItemHeight, minHeight: barHeight)
+            .padding(.horizontal, compact ? 6 : (isSelected ? 16 : 14))
+            .frame(
+                minWidth: compact ? 44 : minimumItemHeight,
+                maxWidth: compact ? .infinity : nil,
+                minHeight: barHeight
+            )
             .contentShape(Capsule())
         }
         .buttonStyle(.plain)
@@ -159,7 +171,7 @@ public struct LiquidTabBar<ID: Hashable & Sendable>: View {
         .accessibilityAddTraits(isSelected ? .isSelected : [])
 
         #if compiler(>=6.2)
-        if #available(iOS 26.0, macOS 26.0, *) {
+        if #available(iOS 26.0, macOS 26.0, *), !reduceMotion {
             button.glassEffectID(item.id, in: selectionNamespace)
         } else {
             button
@@ -169,16 +181,42 @@ public struct LiquidTabBar<ID: Hashable & Sendable>: View {
         #endif
     }
 
+    private func morphingLabel(for item: LiquidTabItem<ID>, isSelected: Bool, compact: Bool) -> some View {
+    Group {
+        if compact {
+            VStack(spacing: 2) {
+                Image(systemName: item.systemImage)
+                    .font(.system(size: 18, weight: .semibold))
+                if isSelected {
+                    Text(item.title)
+                        .font(.caption2.weight(.semibold))
+                        .lineLimit(1)
+                }
+            }
+        } else {
+            HStack(spacing: 7) {
+                Image(systemName: item.systemImage)
+                    .font(.system(size: 18, weight: .semibold))
+                if isSelected {
+                    Text(item.title)
+                        .font(.subheadline.weight(.semibold))
+                        .lineLimit(1)
+                        .transition(reduceMotion ? .identity : .opacity.combined(with: .scale(scale: 0.92)))
+                }
+            }
+        }
+    }
+    }
+
     private func select(_ item: LiquidTabItem<ID>) {
         if LiquidTabSelection.isReselection(current: selection, candidate: item.id) {
             onReselect?(item.id)
             return
         }
 
-        let animation = LiquidAccessibilityBehavior.animatesSelection(reduceMotion: reduceMotion)
-            ? Animation.spring(response: 0.32, dampingFraction: 0.82)
-            : nil
-        withAnimation(animation) {
+        var transaction = Transaction(animation: reduceMotion ? nil : .spring(response: 0.32, dampingFraction: 0.82))
+        transaction.disablesAnimations = reduceMotion
+        withTransaction(transaction) {
             selection = item.id
         }
     }

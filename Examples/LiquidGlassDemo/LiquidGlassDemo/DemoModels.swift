@@ -1,6 +1,20 @@
 import LiquidUI
 import SwiftUI
 
+struct DemoFixture {
+    let completed = 3
+    let total = 5
+    var sampleTitle: String?
+    var isFocusActive = false
+
+    var fraction: Double { Double(completed) / Double(total) }
+    var percentage: Int { Int((fraction * 100).rounded()) }
+    var progressDescription: String { "\(completed) of \(total) sample items complete" }
+    var shareText: String {
+        "Liquid Glass Tab Bars sample: \(progressDescription) (\(percentage)%)."
+    }
+}
+
 enum DemoTab: String, CaseIterable, Identifiable, Sendable {
     case home
     case activity

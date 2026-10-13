@@ -3,11 +3,8 @@ name: CI
 on:
   pull_request:
   push:
-    branches:
-      - main
-      - "release/**"
-    tags:
-      - "v*"
+    branches: [main, "release/**"]
+    tags: ["[0-9]*.[0-9]*.[0-9]*", "v[0-9]*.[0-9]*.[0-9]*"]
   workflow_dispatch:
 
 permissions:
@@ -20,37 +17,10 @@ concurrency:
 env:
   DEMO_PROJECT: Examples/LiquidGlassDemo/LiquidGlassDemo.xcodeproj
   DEMO_SCHEME: LiquidGlassDemo
-  DEMO_DESTINATION: "generic/platform=iOS Simulator"
-  XCODEGEN_VERSION: "2.45.4"
 
 jobs:
-  fast:
-    name: PR · current
-    if: github.event_name == 'pull_request'
-    runs-on: macos-26
-    timeout-minutes: 20
-    env:
-      DEVELOPER_DIR: /Applications/Xcode_26.5.app/Contents/Developer
-    steps:
-      - uses: actions/checkout@v4
-      - name: Ensure SwiftLint
-        run: command -v swiftlint >/dev/null || brew install swiftlint
-      - name: Test package
-        run: swift test
-      - name: Lint
-        run: swiftlint lint --strict
-      - name: Build demo
-        run: |
-          xcodebuild \
-            -project "$DEMO_PROJECT" \
-            -scheme "$DEMO_SCHEME" \
-            -destination "$DEMO_DESTINATION" \
-            CODE_SIGNING_ALLOWED=NO \
-            build
-
   full:
     name: Full · ${{ matrix.name }}
-    if: github.event_name != 'pull_request'
     strategy:
       fail-fast: false
       matrix:
@@ -62,50 +32,60 @@ jobs:
             runner: macos-26
             developer_dir: /Applications/Xcode_26.5.app/Contents/Developer
     runs-on: ${{ matrix.runner }}
-    timeout-minutes: 30
+    timeout-minutes: 45
     env:
       DEVELOPER_DIR: ${{ matrix.developer_dir }}
     steps:
       - uses: actions/checkout@v4
       - name: Ensure SwiftLint
         run: command -v swiftlint >/dev/null || brew install swiftlint
-      - name: Test package
-        run: swift test
-      - name: Lint
-        run: swiftlint lint --strict
+      - name: Install checksum-pinned XcodeGen
+        run: |
+          Scripts/install_xcodegen.sh "$RUNNER_TEMP/pinned-xcodegen"
+          echo "$RUNNER_TEMP/pinned-xcodegen/xcodegen/bin" >> "$GITHUB_PATH"
+      - name: Record tools and revision
+        run: |
+          mkdir -p "$RUNNER_TEMP/liquid-validation"
+          {
+            git rev-parse HEAD
+            swift --version
+            xcodebuild -version
+            swiftlint version
+            xcodegen --version
+          } | tee "$RUNNER_TEMP/liquid-validation/toolchain.txt"
+      - name: Test package and lint
+        run: |
+          swift test | tee "$RUNNER_TEMP/liquid-validation/package.log"
+          swiftlint lint --strict
       - name: Build demo
         run: |
-          xcodebuild \
-            -project "$DEMO_PROJECT" \
-            -scheme "$DEMO_SCHEME" \
-            -destination "$DEMO_DESTINATION" \
-            CODE_SIGNING_ALLOWED=NO \
-            build
-      - name: Install pinned XcodeGen
-        if: matrix.name == 'current'
+          xcodebuild -project "$DEMO_PROJECT" -scheme "$DEMO_SCHEME" \
+            -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO build
+      - name: External released and candidate consumers
+        env:
+          LIQUID_CONSUMER_OUTPUT: ${{ runner.temp }}/liquid-consumers
+        run: Scripts/validate_consumers.sh | tee "$RUNNER_TEMP/liquid-validation/consumers.log"
+      - name: Hosted and UI integration tests
+        env:
+          LIQUID_TEST_OUTPUT: ${{ runner.temp }}/liquid-validation/ui
+        run: Scripts/test_ui.sh > "$RUNNER_TEMP/liquid-validation/ui.log" 2>&1
+      - name: Reproduce checked-in project twice
         run: |
-          curl --fail --location --silent --show-error \
-            "https://github.com/yonaskolb/XcodeGen/releases/download/${XCODEGEN_VERSION}/xcodegen.zip" \
-            --output "$RUNNER_TEMP/xcodegen.zip"
-          unzip -q "$RUNNER_TEMP/xcodegen.zip" -d "$RUNNER_TEMP/xcodegen"
-          echo "$RUNNER_TEMP/xcodegen/xcodegen/bin" >> "$GITHUB_PATH"
-      - name: Reproduce checked-in project
-        if: matrix.name == 'current'
+          test "$(xcodegen --version | awk '{print $2}')" = '2.45.4'
+          (cd Examples/LiquidGlassDemo && xcodegen generate && xcodegen generate)
+          git diff --exit-code -- "$DEMO_PROJECT/project.pbxproj" "$DEMO_PROJECT/xcshareddata/xcschemes"
+      - name: Check documentation links and hygiene
         run: |
-          test "$(xcodegen --version | awk '{print $2}')" = "$XCODEGEN_VERSION"
-          demo_dir="$(dirname "$DEMO_PROJECT")"
-          (
-            cd "$demo_dir"
-            xcodegen generate
-          )
-          git diff --exit-code -- "$DEMO_PROJECT/project.pbxproj"
-      - name: Check documentation links
-        if: matrix.name == 'current'
-        run: |
-          ruby -e 'Dir["**/*.md"].each { |file| File.read(file).scan(/\[[^\]]*\]\(([^)]+)\)/).flatten.each { |link| next if link.start_with?("http", "#", "mailto:"); path = link.split("#", 2).first.delete_prefix("<").delete_suffix(">"); next if path.empty?; abort("Missing #{path} from #{file}") unless File.exist?(File.expand_path(path, File.dirname(file))) } }'
-      - name: Check repository hygiene
-        if: matrix.name == 'current'
-        run: |
+          ruby -e 'Dir["**/*.md"].reject { |f| f.start_with?(".build/", "DerivedData") }.each { |file| File.read(file).scan(/\[[^\]]*\]\(([^)]+)\)/).flatten.each { |link| next if link.start_with?("http", "#", "mailto:"); path = link.split("#", 2).first.delete_prefix("<").delete_suffix(">"); next if path.empty?; abort("Missing #{path} from #{file}") unless File.exist?(File.expand_path(path, File.dirname(file))) } }'
           if git ls-files | grep -E '(^|/)(\.DS_Store|Thumbs\.db|xcuserdata|DerivedData|\.build)(/|$)|\.(xcuserstate|xccheckout)$'; then
             exit 1
           fi
+      - name: Upload validation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: validation-${{ matrix.name }}
+          path: |
+            ${{ runner.temp }}/liquid-validation/*.txt
+            ${{ runner.temp }}/liquid-validation/*.log
+            ${{ runner.temp }}/liquid-validation/ui/*.xcresult

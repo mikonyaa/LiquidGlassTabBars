@@ -2,6 +2,24 @@
 
 All notable changes will be documented here.
 
+## Unreleased — 1.0.4 release candidate
+
+### Fixed
+
+- Reduce Transparency composites every fallback color over opaque adaptive system backing.
+- Morphing adapts to equal-width capsules when long labels or Dynamic Type exceed available width.
+- Reduced motion disables the selection transaction and native morphing IDs.
+- Demo Create, Focus and Share controls perform local actions; progress consistently displays 3/5 (60%).
+- CI runs for existing SemVer tags and checks both SDK lanes, external consumers and hosted/UI tests.
+- Capture validates tools and devices, creates an isolated Simulator by default, cleans up its own resources on interrupts and records provenance.
+
+### Added
+
+- Public-API integration host, real accessibility settings automation and pixel/geometry/binding regression fixtures.
+- Checksum-pinned XcodeGen installation, reproducible commands and a separate physical-device/pilot checklist.
+
+Public initializer signatures, product/module names, generic IDs, binding and `onReselect` remain compatible. No minimum OS or runtime dependency changes. See [draft release notes](Docs/ReleaseNotes-1.0.4-draft.md).
+
 ## 1.0.3
 
 ### Changed

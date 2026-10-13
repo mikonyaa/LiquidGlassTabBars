@@ -9,6 +9,7 @@ import AppKit
 public struct LiquidTabBarTheme: Sendable {
     public var tint: Color
     public var inactiveForeground: Color
+    /// In Reduce Transparency this color is composited over the opaque adaptive system background.
     public var fallbackFill: Color
     public var fallbackBorder: Color
     public var selectedFillOpacity: Double

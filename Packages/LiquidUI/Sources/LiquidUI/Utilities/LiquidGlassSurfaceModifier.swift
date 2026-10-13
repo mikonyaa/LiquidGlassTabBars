@@ -15,6 +15,7 @@ struct LiquidGlassSurfaceModifier<SurfaceShape: Shape>: ViewModifier {
         ) {
             content
                 .background(theme.fallbackFill, in: shape)
+                .background(LiquidTabBarTheme.adaptiveFallbackFill, in: shape)
                 .overlay { shape.stroke(theme.fallbackBorder, lineWidth: 1) }
         } else {
             #if compiler(>=6.2)
