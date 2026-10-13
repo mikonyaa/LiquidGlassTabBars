@@ -4,12 +4,12 @@ The package supports Swift tools 6.0, iOS 17 and macOS 14. Native glass requires
 
 ## Automatic boundaries
 
-`Examples/LiquidGlassDemo/IntegrationHost` imports public `LiquidUI` without `@testable` and uses stable Int IDs 101, 203, 305, 407, 509. Controls select count, variant, usable width, Dynamic Type, long labels and direction. Actual reduced-effects values are displayed. To change those values, use Settings → Accessibility → Display & Text Size → Reduce Transparency, and Accessibility → Motion → Reduce Motion. These SwiftUI environment values are read-only.
+`Examples/LiquidGlassDemo/IntegrationHost` imports public `LiquidUI` without `@testable` and uses stable Int IDs 101, 203, 305, 407, 509. Controls select count, variant, usable width, Dynamic Type, short/long labels and direction, including XSmall and accessibility1–5. Actual reduced-effects values are displayed. To change those values, use Settings → Accessibility → Display & Text Size → Reduce Transparency, and Accessibility → Motion → Reduce Motion. These SwiftUI environment values are read-only.
 
 The shared `LiquidGlassDemo` scheme includes:
 
 - Hosted `SurfaceTests`: compare pixels over bright and dark backdrops for four presets, a low-alpha custom theme and `.clear`, with actual Reduce Transparency enabled.
-- `InteractionTests`: 2/3/5 IDs × Floating/Morphing × 320/375/420 pt × Large/accessibility3, long labels, LTR/RTL; narrow five-item tests also cover accessibility1–5. Each target must be at least 44 × 44 pt, visible, hittable and separate. Selection and reselection counters exercise real taps and the real binding transaction.
+- `InteractionTests`: 2/3/5 IDs × Floating/Morphing × 320/375/420 pt × Large/accessibility3, long labels, LTR/RTL; narrow five-item tests also cover XSmall and accessibility1–5. Short-label cases exercise the expanding layout. Each target must be at least 44 × 44 pt, visible, hittable and separate inside the allotted width, initially and after every selection. Selection and reselection counters exercise real taps and the real binding transaction.
 - Caller-owned external/invalid selection and omitted callback checks.
 - `DemoTests`: 60% progress, Create save/cancel, Focus on/off, native share presentation/dismissal, rapid style switches and relaunch.
 
@@ -73,7 +73,7 @@ LIQUID_DEMO_DEVICE_ID=YOUR_SIMULATOR_ID Scripts/record_showcase.sh
 
 The default creates a new Simulator. Explicit IDs are validated before building/recording; a preinstalled demo causes an error to preserve it. The script checks Xcode, simctl, ffmpeg, Python and Git. It records screenshots first, then a runtime movie and optimized GIF. EXIT/INT/TERM cleanup stops its own recorder, removes its own app installation and deletes only a Simulator it created. An explicitly supplied Simulator is retained.
 
-`Assets/capture-manifest.json` records source SHA, initial dirty state, Xcode, device, runtime, capture type and file hashes. `Assets/capture-commands.txt` records commands with portable source/scratch paths. Temporary video and build files are removed. Set `LIQUID_DEMO_RUNTIME`, `LIQUID_DEMO_DEVICE_TYPE`, `LIQUID_DEMO_DURATION` or `LIQUID_DEMO_OUTPUT` to customize a capture. Screenshots are Simulator evidence, never physical-device validation.
+`Assets/capture-manifest.json` records source SHA, initial dirty state, Xcode, device, runtime, capture type and hashes of the three generated screenshots and generated GIF. Other files in the output folder retain their own provenance. `Assets/capture-commands.txt` records commands with portable source/scratch paths. Temporary video and build files are removed. Set `LIQUID_DEMO_RUNTIME`, `LIQUID_DEMO_DEVICE_TYPE`, `LIQUID_DEMO_DURATION` or `LIQUID_DEMO_OUTPUT` to customize a capture. Screenshots are Simulator evidence, never physical-device validation.
 
 ## Human and external gates
 

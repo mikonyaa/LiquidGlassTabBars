@@ -117,6 +117,16 @@ targets:
         TEST_TARGET_NAME: LiquidGlassDemo
 
 schemes:
+  IntegrationHost:
+    build:
+      targets:
+        IntegrationHost: all
+    run:
+      config: Debug
+    test:
+      targets:
+        - IntegrationTests
+        - IntegrationUITests
   LiquidGlassDemo:
     build:
       targets:

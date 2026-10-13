@@ -23,6 +23,24 @@ final class InteractionTests: XCTestCase {
         }
     }
 
+    func testShortLabelsKeepExpandedLayoutReachable() {
+        AccessibilitySettings.setReducedEffects(false)
+        for count in [2, 3, 5] {
+            for variant in ["floating", "morphing"] {
+                for width in [320, 420] {
+                    check(count: count, variant: variant, width: width, access: false, rtl: true, longLabels: false)
+                }
+            }
+        }
+    }
+
+    func testSmallTextKeepsMinimumTargets() {
+        AccessibilitySettings.setReducedEffects(false)
+        for variant in ["floating", "morphing"] {
+            check(count: 5, variant: variant, width: 320, access: false, rtl: false, typeSize: 6)
+        }
+    }
+
     func testConfigureReducedEffects() {
         AccessibilitySettings.setReducedEffects(true)
     }
@@ -64,45 +82,69 @@ final class InteractionTests: XCTestCase {
         XCTAssertEqual(app.staticTexts["writes"].label, "writes: 0")
     }
 
-    private func check(count: Int, variant: String, width: Int, access: Bool, rtl: Bool, typeSize: Int = 3) {
+    private func check(
+        count: Int, variant: String, width: Int, access: Bool, rtl: Bool,
+        typeSize: Int = 3, longLabels: Bool = true
+    ) {
         let scenario = "\(count)/\(variant)/\(width)/access=\(access)/type=\(typeSize)/rtl=\(rtl)"
         XCTContext.runActivity(named: scenario) { activity in
             let app = XCUIApplication()
-            app.launchArguments = ["--count", "\(count)", "--variant", variant, "--width", "\(width)", "--long"]
-            if access { app.launchArguments += ["--dynamic-type", "\(typeSize)"] }
+            app.launchArguments = ["--count", "\(count)", "--variant", variant, "--width", "\(width)"]
+            if longLabels { app.launchArguments.append("--long") }
+            app.launchArguments += ["--dynamic-type", "\(access || typeSize == 6 ? typeSize : 0)"]
             if rtl { app.launchArguments.append("--rtl") }
             app.launch()
             XCTAssertEqual(app.staticTexts["systemRT"].label, "systemRT: \(access ? 1 : 0)")
             XCTAssertEqual(app.staticTexts["systemRM"].label, "systemRM: \(access ? 1 : 0)")
-            var previous: [CGRect] = []
-            for index in 0 ..< count {
-                let title = "Destination \(index + 1) with a very long localized title"
-                let button = app.buttons[title]
-                XCTAssertTrue(button.waitForExistence(timeout: 5))
-                let frame = button.frame
-                XCTAssertGreaterThanOrEqual(frame.width, 44, title)
-                XCTAssertGreaterThanOrEqual(frame.height, 44, title)
-                XCTAssertTrue(app.frame.contains(frame), "Offscreen \(title): \(frame)")
-                XCTAssertTrue(button.isHittable, title)
-                for other in previous { XCTAssertFalse(frame.intersects(other), "Overlapping targets") }
-                previous.append(frame)
-            }
+            assertTargets(in: app, count: count, width: width, longLabels: longLabels, activity: activity)
             let screenshot = XCTAttachment(screenshot: app.screenshot())
             screenshot.lifetime = .keepAlways
             activity.add(screenshot)
-            app.buttons["Destination 1 with a very long localized title"].tap()
+            app.buttons[title(for: 0, long: longLabels)].tap()
             XCTAssertEqual(app.staticTexts["writes"].label, "writes: 0")
             XCTAssertEqual(app.staticTexts["reselections"].label, "reselections: 1")
             for index in 1 ..< count {
-                app.buttons["Destination \(index + 1) with a very long localized title"].tap()
+                app.buttons[title(for: index, long: longLabels)].tap()
                 XCTAssertEqual(app.staticTexts["selection"].label, "selection: \(identifiers[index])")
                 XCTAssertEqual(app.staticTexts["writes"].label, "writes: \(index)")
                 XCTAssertEqual(app.staticTexts["animated"].label, "animated: \(access ? 0 : 1)")
-                app.buttons["Destination \(index + 1) with a very long localized title"].tap()
+                assertTargets(in: app, count: count, width: width, longLabels: longLabels, activity: activity)
+                XCTAssertTrue(app.buttons[title(for: index, long: longLabels)].isSelected)
+                app.buttons[title(for: index, long: longLabels)].tap()
                 XCTAssertEqual(app.staticTexts["reselections"].label, "reselections: \(index + 1)")
                 XCTAssertEqual(app.staticTexts["writes"].label, "writes: \(index)")
             }
             app.terminate()
         }
+    }
+
+    private func title(for index: Int, long: Bool) -> String {
+        long ? "Destination \(index + 1) with a very long localized title" : "Tab \(index + 1)"
+    }
+
+    private func assertTargets(
+        in app: XCUIApplication, count: Int, width: Int, longLabels: Bool, activity: XCTActivity
+    ) {
+        let left = app.frame.midX - CGFloat(width) / 2
+        let right = left + CGFloat(width)
+        var frames: [CGRect] = []
+        for index in 0 ..< count {
+            let label = title(for: index, long: longLabels)
+            let button = app.buttons[label]
+            XCTAssertTrue(button.waitForExistence(timeout: 5))
+            let frame = button.frame
+            XCTAssertGreaterThanOrEqual(frame.width, 44, label)
+            XCTAssertGreaterThanOrEqual(frame.height, 44, label)
+            XCTAssertGreaterThanOrEqual(frame.minX, left - 0.5, "Outside allotted width: \(label)")
+            XCTAssertLessThanOrEqual(frame.maxX, right + 0.5, "Outside allotted width: \(label)")
+            XCTAssertTrue(app.frame.contains(frame), "Offscreen \(label): \(frame)")
+            XCTAssertTrue(button.isHittable, label)
+            for other in frames { XCTAssertFalse(frame.intersects(other), "Overlapping targets") }
+            frames.append(frame)
+        }
+        let measured = XCTAttachment(string: frames.map { String(describing: $0) }.joined(separator: "\n"))
+        measured.name = "Target frames after selection"
+        measured.lifetime = .keepAlways
+        activity.add(measured)
     }
 }

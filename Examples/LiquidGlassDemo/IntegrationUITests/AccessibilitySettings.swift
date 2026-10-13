@@ -20,7 +20,7 @@ enum AccessibilitySettings {
         XCTAssertTrue(accessibility.waitForExistence(timeout: 5), settings.debugDescription)
         accessibility.tap()
         settings.staticTexts["Display & Text Size"].tap()
-        let transparency = settings.switches["Reduce Transparency"]
+        let transparency = settings.switches["REDUCE_TRANSPARENCY"]
         for _ in 0 ..< 4 {
             if transparency.isHittable { break }
             settings.swipeUp()
@@ -28,7 +28,7 @@ enum AccessibilitySettings {
         set(transparency, to: enabled)
         settings.navigationBars.buttons.firstMatch.tap()
         settings.staticTexts["Motion"].tap()
-        set(settings.switches["Reduce Motion"], to: enabled)
+        set(settings.switches["REDUCE_MOTION"], to: enabled)
         settings.terminate()
     }
 

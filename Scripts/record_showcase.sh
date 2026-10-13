@@ -4,7 +4,7 @@ repo_root="$(cd "$(dirname "$0")/.." && pwd)"
 for tool in xcodebuild xcrun ffmpeg python3 git; do
   command -v "$tool" >/dev/null || { echo "Required tool missing: $tool" >&2; exit 2; }
 done
-duration="${LIQUID_DEMO_DURATION:-13.4}"
+duration="${LIQUID_DEMO_DURATION:-11.8}"
 python3 -c 'import sys; d=float(sys.argv[1]); sys.exit(0 if 0 < d <= 120 else 2)' "$duration" || {
   echo "LIQUID_DEMO_DURATION must be between 0 and 120 seconds" >&2; exit 2;
 }
@@ -92,7 +92,8 @@ capture_screenshot() {
   xcrun simctl terminate "$device_id" "$bundle_id" >/dev/null 2>&1 || true
   run xcrun simctl launch "$device_id" "$bundle_id" "$@"
   sleep 2
-  run xcrun simctl io "$device_id" screenshot "$output_dir/Screenshots/$filename"
+  run xcrun simctl io "$device_id" screenshot "$scratch_dir/$filename"
+  run cp "$scratch_dir/$filename" "$output_dir/Screenshots/$filename"
 }
 # Runtime screens are captured before assembling the showcase GIF.
 capture_screenshot system-classic.png
@@ -124,7 +125,9 @@ root,device_id,scratch,output=map(pathlib.Path,sys.argv[1:5])
 devices=json.loads((scratch/'devices.json').read_text())['devices']
 runtime_id,device=next((r,d) for r,group in devices.items() for d in group if d['udid']==str(device_id))
 runtime=next(r for r in json.loads((scratch/'runtimes.json').read_text())['runtimes'] if r['identifier']==runtime_id)
-files={str(p.relative_to(output)):hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(output.rglob('*')) if p.suffix in {'.png','.gif'}}
+generated=['Screenshots/system-classic.png','Screenshots/floating-graphite.png',
+ 'Screenshots/morphing-classic.png','GIFs/liquid-tab-bars.gif']
+files={name:hashlib.sha256((output/name).read_bytes()).hexdigest() for name in generated}
 manifest={'capture_type':'iOS Simulator runtime screenshots and recording; not physical-device validation',
  'sha':sys.argv[5], 'dirty':bool(sys.argv[6]),
  'captured_at_utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),

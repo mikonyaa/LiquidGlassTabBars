@@ -12,6 +12,9 @@ public struct LiquidTabBar<ID: Hashable & Sendable>: View {
     @ScaledMetric(relativeTo: .body) private var barHeight: CGFloat = 60
     @ScaledMetric(relativeTo: .body) private var minimumItemHeight: CGFloat = 48
 
+    private var itemHeight: CGFloat { max(44, minimumItemHeight) }
+    private var surfaceHeight: CGFloat { max(itemHeight + 12, barHeight) }
+
     /// Items must have unique, stable IDs and selection must identify one of them.
     /// The caller owns selection, including changes to the available destinations.
     public init(
@@ -56,9 +59,9 @@ public struct LiquidTabBar<ID: Hashable & Sendable>: View {
                 floatingButton(for: item)
             }
         }
-        .frame(height: minimumItemHeight)
+        .frame(height: itemHeight)
         .padding(6)
-        .frame(height: barHeight)
+        .frame(height: surfaceHeight)
         .liquidGlassSurface(in: Capsule(), theme: theme)
         .shadow(color: theme.shadowColor, radius: theme.shadowRadius, y: 8)
     }
@@ -102,7 +105,7 @@ public struct LiquidTabBar<ID: Hashable & Sendable>: View {
                 .padding(.vertical, 6)
             }
             .frame(minWidth: 44, maxWidth: .infinity)
-            .frame(height: minimumItemHeight)
+            .frame(height: itemHeight)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
@@ -154,9 +157,9 @@ public struct LiquidTabBar<ID: Hashable & Sendable>: View {
             .foregroundStyle(isSelected ? theme.tint : theme.inactiveForeground)
             .padding(.horizontal, compact ? 6 : (isSelected ? 16 : 14))
             .frame(
-                minWidth: compact ? 44 : minimumItemHeight,
+                minWidth: compact ? 44 : itemHeight,
                 maxWidth: compact ? .infinity : nil,
-                minHeight: barHeight
+                minHeight: surfaceHeight
             )
             .contentShape(Capsule())
         }

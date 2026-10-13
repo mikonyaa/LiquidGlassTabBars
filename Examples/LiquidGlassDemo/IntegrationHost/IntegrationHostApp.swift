@@ -28,7 +28,12 @@ struct IntegrationFixture: View {
     private let arguments = ProcessInfo.processInfo.arguments
     private let identifiers = [101, 203, 305, 407, 509]
     private static let typeSizes: [DynamicTypeSize] = [
-        .large, .accessibility1, .accessibility2, .accessibility3, .accessibility4, .accessibility5
+        .large, .accessibility1, .accessibility2, .accessibility3, .accessibility4, .accessibility5,
+        .xSmall, .small, .medium, .xLarge, .xxLarge, .xxxLarge
+    ]
+    private static let typeNames = [
+        "Large", "Access1", "Access2", "Access3", "Access4", "Access5",
+        "XSmall", "Small", "Medium", "XLarge", "XXLarge", "XXXLarge"
     ]
 
     init() {
@@ -43,7 +48,7 @@ struct IntegrationFixture: View {
         _width = State(initialValue: Double(value("--width", default: "320")) ?? 320)
         _variant = State(initialValue: value("--variant", default: "morphing") == "floating" ? .floating : .morphing)
         let typeIndex = Int(value("--dynamic-type", default: arguments.contains("--access") ? "3" : "0")) ?? 0
-        _dynamicType = State(initialValue: Self.typeSizes[min(max(typeIndex, 0), 5)])
+        _dynamicType = State(initialValue: Self.typeSizes[min(max(typeIndex, 0), Self.typeSizes.count - 1)])
         _longLabels = State(initialValue: arguments.contains("--long"))
         _rightToLeft = State(initialValue: arguments.contains("--rtl"))
         _selection = State(initialValue: Int(value("--selection", default: "101")) ?? 101)
@@ -117,7 +122,7 @@ struct IntegrationFixture: View {
             HStack {
                 Picker("Text size", selection: $dynamicType) {
                     ForEach(Array(Self.typeSizes.enumerated()), id: \.offset) { index, size in
-                        Text(index == 0 ? "Large" : "Access\(index)").tag(size)
+                        Text(Self.typeNames[index]).tag(size)
                     }
                 }
                 Toggle("Long", isOn: $longLabels)
