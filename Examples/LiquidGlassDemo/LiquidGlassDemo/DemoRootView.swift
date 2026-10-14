@@ -163,9 +163,9 @@ struct DemoRootView: View {
                 .font(.subheadline.weight(.semibold))
                 .frame(minWidth: 44, minHeight: 44)
                 .contentShape(Rectangle())
-                .accessibilityLabel("Tab bar style")
-                .accessibilityValue(barStyle.title)
         }
+        .accessibilityLabel("Tab bar style")
+        .accessibilityValue(barStyle.title)
     }
 
     private var paletteMenu: some View {
@@ -189,9 +189,9 @@ struct DemoRootView: View {
                 .font(.subheadline.weight(.semibold))
                 .frame(minWidth: 44, minHeight: 44)
                 .contentShape(Rectangle())
-                .accessibilityLabel("Color palette")
-                .accessibilityValue(palette.title)
         }
+        .accessibilityLabel("Color palette")
+        .accessibilityValue(palette.title)
     }
 
     @MainActor
