@@ -1,6 +1,6 @@
 # Runtime screenshots
 
-`system-classic.png`, `floating-graphite.png` and `morphing-classic.png` were captured from the running demo on an iPhone 16 Pro Max Simulator, iOS 26.5, using Xcode 27.0. Their 1320 × 2868 PNGs correspond to source `b8b1e5896eb2d768c54e6f74eb2a737d0a254ad0`.
+`system-classic.png`, `floating-graphite.png` and `morphing-classic.png` were captured from the running demo on an iPhone 16 Pro Max Simulator, iOS 26.5, using Xcode 27.0. Their 1320 × 2868 PNGs correspond to source `ef4a025559a857c2eb8e8ec701658ee6f5a47f2a`.
 
 See [capture manifest](../capture-manifest.json) for SHA-256 hashes, capture time and device/runtime metadata, and [commands](../capture-commands.txt) for the recording steps. The capture began with a clean checkout.
 

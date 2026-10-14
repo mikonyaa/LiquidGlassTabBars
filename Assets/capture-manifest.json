@@ -1,17 +1,17 @@
 {
   "capture_type": "iOS Simulator runtime screenshots and recording; not physical-device validation",
-  "sha": "b8b1e5896eb2d768c54e6f74eb2a737d0a254ad0",
+  "sha": "ef4a025559a857c2eb8e8ec701658ee6f5a47f2a",
   "dirty": false,
-  "captured_at_utc": "2026-10-14T00:47:23.907778+00:00",
-  "device": "Liquid Glass capture 84105",
+  "captured_at_utc": "2026-10-14T02:53:36.645115+00:00",
+  "device": "Liquid Glass capture 23163",
   "device_type": "com.apple.CoreSimulator.SimDeviceType.iPhone-16-Pro-Max",
   "os": "26.5",
   "xcode": "Xcode 27.0\nBuild version 27A266a",
   "commands": "capture-commands.txt",
   "sha256": {
-    "Screenshots/system-classic.png": "58e90509b9c58059e0bd27d36a49e43477d46c25981ff2422e7f5aad0b133022",
-    "Screenshots/floating-graphite.png": "e3afa2924193b094d75147d64a00d72c7739e2f219d7344eae80075bedfd1f0e",
-    "Screenshots/morphing-classic.png": "67f332b001cd72714d588cfa9fb187a6cd64b52e22ab3436eaa15f724a54ac3f",
-    "GIFs/liquid-tab-bars.gif": "d10fc15c089d7969e3f175a67e1a773f8b4a630c7b36f841ff9e3cecf4936e76"
+    "Screenshots/system-classic.png": "4c297ebed1a650738ce019bc35cd69d1c151bbd01ee80d3311a3ee820795d078",
+    "Screenshots/floating-graphite.png": "a7cae8ef84758092d9ffd5781fdba77fa2dcfffaf2f269dd41484ebd473bddc9",
+    "Screenshots/morphing-classic.png": "60f44765680cf0eca135d510c0a94e8a4f0eafd2dc28c1a6da47f3fd608602ef",
+    "GIFs/liquid-tab-bars.gif": "0faf34b34e6358d14f8884cf4ce2f05c734d76d3eb4ae3240d7a28f833da54ac"
   }
 }

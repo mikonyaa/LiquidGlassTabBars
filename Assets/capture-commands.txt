@@ -1,16 +1,16 @@
-xcrun simctl boot A19E3307-98DB-4EC0-9CD3-648716239337
-xcrun simctl bootstatus A19E3307-98DB-4EC0-9CD3-648716239337 -b
-xcodebuild -project ./Examples/LiquidGlassDemo/LiquidGlassDemo.xcodeproj -scheme LiquidGlassDemo -configuration Debug -destination 'platform=iOS Simulator,id=A19E3307-98DB-4EC0-9CD3-648716239337' -derivedDataPath <scratch>/DerivedData CODE_SIGNING_ALLOWED=NO build
-xcrun simctl install A19E3307-98DB-4EC0-9CD3-648716239337 <scratch>/DerivedData/Build/Products/Debug-iphonesimulator/LiquidGlassDemo.app
-xcrun simctl launch A19E3307-98DB-4EC0-9CD3-648716239337 dev.liquidglasstemplates.demo
-xcrun simctl io A19E3307-98DB-4EC0-9CD3-648716239337 screenshot <scratch>/system-classic.png
+xcrun simctl boot B4C979BD-A968-422C-8E16-DAF70A07EC1D
+xcrun simctl bootstatus B4C979BD-A968-422C-8E16-DAF70A07EC1D -b
+xcodebuild -project ./Examples/LiquidGlassDemo/LiquidGlassDemo.xcodeproj -scheme LiquidGlassDemo -configuration Debug -destination 'platform=iOS Simulator,id=B4C979BD-A968-422C-8E16-DAF70A07EC1D' -derivedDataPath <scratch>/DerivedData CODE_SIGNING_ALLOWED=NO build
+xcrun simctl install B4C979BD-A968-422C-8E16-DAF70A07EC1D <scratch>/DerivedData/Build/Products/Debug-iphonesimulator/LiquidGlassDemo.app
+xcrun simctl launch B4C979BD-A968-422C-8E16-DAF70A07EC1D dev.liquidglasstemplates.demo
+xcrun simctl io B4C979BD-A968-422C-8E16-DAF70A07EC1D screenshot <scratch>/system-classic.png
 cp <scratch>/system-classic.png ./Assets/Screenshots/system-classic.png
-xcrun simctl launch A19E3307-98DB-4EC0-9CD3-648716239337 dev.liquidglasstemplates.demo --floating --graphite
-xcrun simctl io A19E3307-98DB-4EC0-9CD3-648716239337 screenshot <scratch>/floating-graphite.png
+xcrun simctl launch B4C979BD-A968-422C-8E16-DAF70A07EC1D dev.liquidglasstemplates.demo --floating --graphite
+xcrun simctl io B4C979BD-A968-422C-8E16-DAF70A07EC1D screenshot <scratch>/floating-graphite.png
 cp <scratch>/floating-graphite.png ./Assets/Screenshots/floating-graphite.png
-xcrun simctl launch A19E3307-98DB-4EC0-9CD3-648716239337 dev.liquidglasstemplates.demo --morphing --activity
-xcrun simctl io A19E3307-98DB-4EC0-9CD3-648716239337 screenshot <scratch>/morphing-classic.png
+xcrun simctl launch B4C979BD-A968-422C-8E16-DAF70A07EC1D dev.liquidglasstemplates.demo --morphing --activity
+xcrun simctl io B4C979BD-A968-422C-8E16-DAF70A07EC1D screenshot <scratch>/morphing-classic.png
 cp <scratch>/morphing-classic.png ./Assets/Screenshots/morphing-classic.png
-xcrun simctl launch A19E3307-98DB-4EC0-9CD3-648716239337 dev.liquidglasstemplates.demo --showcase
-xcrun simctl io A19E3307-98DB-4EC0-9CD3-648716239337 recordVideo --codec=h264 --force <scratch>/showcase-source.mov
+xcrun simctl launch B4C979BD-A968-422C-8E16-DAF70A07EC1D dev.liquidglasstemplates.demo --showcase
+xcrun simctl io B4C979BD-A968-422C-8E16-DAF70A07EC1D recordVideo --codec=h264 --force <scratch>/showcase-source.mov
 ffmpeg -y -i <scratch>/showcase-source.mov -filter_complex 'fps=20,scale=400:-1:flags=lanczos,split[frames][palette_input];[palette_input]palettegen=max_colors=192:stats_mode=diff[palette];[frames][palette]paletteuse=dither=sierra2_4a:diff_mode=rectangle' -loop 0 ./Assets/GIFs/liquid-tab-bars.gif
