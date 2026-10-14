@@ -41,6 +41,23 @@ final class InteractionTests: XCTestCase {
         }
     }
 
+    func testNormalMotionTransaction() {
+        AccessibilitySettings.setReducedEffects(false)
+        check(count: 2, variant: "floating", width: 320, access: false, rtl: false)
+    }
+
+    func testReducedEffectsAreIndependent() {
+        for motion in [false, true] {
+            AccessibilitySettings.set(reduceTransparency: !motion, reduceMotion: motion)
+            for variant in ["floating", "morphing"] {
+                check(
+                    count: 2, variant: variant, width: 320, access: false, rtl: false,
+                    motion: motion, transparency: !motion
+                )
+            }
+        }
+    }
+
     func testConfigureReducedEffects() {
         AccessibilitySettings.setReducedEffects(true)
     }
@@ -84,7 +101,7 @@ final class InteractionTests: XCTestCase {
 
     private func check(
         count: Int, variant: String, width: Int, access: Bool, rtl: Bool,
-        typeSize: Int = 3, longLabels: Bool = true
+        typeSize: Int = 3, longLabels: Bool = true, motion: Bool? = nil, transparency: Bool? = nil
     ) {
         let scenario = "\(count)/\(variant)/\(width)/access=\(access)/type=\(typeSize)/rtl=\(rtl)"
         XCTContext.runActivity(named: scenario) { activity in
@@ -94,8 +111,8 @@ final class InteractionTests: XCTestCase {
             app.launchArguments += ["--dynamic-type", "\(access || typeSize == 6 ? typeSize : 0)"]
             if rtl { app.launchArguments.append("--rtl") }
             app.launch()
-            XCTAssertEqual(app.staticTexts["systemRT"].label, "systemRT: \(access ? 1 : 0)")
-            XCTAssertEqual(app.staticTexts["systemRM"].label, "systemRM: \(access ? 1 : 0)")
+            XCTAssertEqual(app.staticTexts["systemRT"].label, "systemRT: \((transparency ?? access) ? 1 : 0)")
+            XCTAssertEqual(app.staticTexts["systemRM"].label, "systemRM: \((motion ?? access) ? 1 : 0)")
             assertTargets(in: app, count: count, width: width, longLabels: longLabels, activity: activity)
             let screenshot = XCTAttachment(screenshot: app.screenshot())
             screenshot.lifetime = .keepAlways
@@ -107,7 +124,7 @@ final class InteractionTests: XCTestCase {
                 app.buttons[title(for: index, long: longLabels)].tap()
                 XCTAssertEqual(app.staticTexts["selection"].label, "selection: \(identifiers[index])")
                 XCTAssertEqual(app.staticTexts["writes"].label, "writes: \(index)")
-                XCTAssertEqual(app.staticTexts["animated"].label, "animated: \(access ? 0 : 1)")
+                XCTAssertEqual(app.staticTexts["uiAnimated"].label, "uiAnimated: \((motion ?? access) ? 0 : 1)")
                 assertTargets(in: app, count: count, width: width, longLabels: longLabels, activity: activity)
                 XCTAssertTrue(app.buttons[title(for: index, long: longLabels)].isSelected)
                 app.buttons[title(for: index, long: longLabels)].tap()
@@ -125,8 +142,11 @@ final class InteractionTests: XCTestCase {
     private func assertTargets(
         in app: XCUIApplication, count: Int, width: Int, longLabels: Bool, activity: XCTActivity
     ) {
-        let left = app.frame.midX - CGFloat(width) / 2
+        let appBounds = app.frame
+        let left = appBounds.midX - CGFloat(width) / 2
         let right = left + CGFloat(width)
+        // Accessibility frames include a half-point border and floating-point rounding.
+        let edgeTolerance: CGFloat = 0.51
         var frames: [CGRect] = []
         for index in 0 ..< count {
             let label = title(for: index, long: longLabels)
@@ -135,9 +155,9 @@ final class InteractionTests: XCTestCase {
             let frame = button.frame
             XCTAssertGreaterThanOrEqual(frame.width, 44, label)
             XCTAssertGreaterThanOrEqual(frame.height, 44, label)
-            XCTAssertGreaterThanOrEqual(frame.minX, left - 0.5, "Outside allotted width: \(label)")
-            XCTAssertLessThanOrEqual(frame.maxX, right + 0.5, "Outside allotted width: \(label)")
-            XCTAssertTrue(app.frame.contains(frame), "Offscreen \(label): \(frame)")
+            XCTAssertGreaterThanOrEqual(frame.minX, left - edgeTolerance, "Outside allotted width: \(label)")
+            XCTAssertLessThanOrEqual(frame.maxX, right + edgeTolerance, "Outside allotted width: \(label)")
+            XCTAssertTrue(appBounds.contains(frame), "Offscreen \(label): \(frame)")
             XCTAssertTrue(button.isHittable, label)
             for other in frames { XCTAssertFalse(frame.intersects(other), "Overlapping targets") }
             frames.append(frame)

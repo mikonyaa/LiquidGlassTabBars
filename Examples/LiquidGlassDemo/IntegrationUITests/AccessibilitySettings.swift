@@ -3,6 +3,10 @@ import XCTest
 @MainActor
 enum AccessibilitySettings {
     static func setReducedEffects(_ enabled: Bool) {
+        set(reduceTransparency: enabled, reduceMotion: enabled)
+    }
+
+    static func set(reduceTransparency: Bool, reduceMotion: Bool) {
         let settings = XCUIApplication(bundleIdentifier: "com.apple.Preferences")
         settings.launchArguments = ["-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
         settings.launch()
@@ -25,10 +29,10 @@ enum AccessibilitySettings {
             if transparency.isHittable { break }
             settings.swipeUp()
         }
-        set(transparency, to: enabled)
+        set(transparency, to: reduceTransparency)
         settings.navigationBars.buttons.firstMatch.tap()
         settings.staticTexts["Motion"].tap()
-        set(settings.switches["REDUCE_MOTION"], to: enabled)
+        set(settings.switches["REDUCE_MOTION"], to: reduceMotion)
         settings.terminate()
     }
 

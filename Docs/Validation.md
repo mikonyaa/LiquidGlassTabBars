@@ -9,8 +9,8 @@ The package supports Swift tools 6.0, iOS 17 and macOS 14. Native glass requires
 The shared `LiquidGlassDemo` scheme includes:
 
 - Hosted `SurfaceTests`: compare pixels over bright and dark backdrops for four presets, a low-alpha custom theme and `.clear`, with actual Reduce Transparency enabled.
-- `InteractionTests`: 2/3/5 IDs × Floating/Morphing × 320/375/420 pt × Large/accessibility3, long labels, LTR/RTL; narrow five-item tests also cover XSmall and accessibility1–5. Short-label cases exercise the expanding layout. Each target must be at least 44 × 44 pt, visible, hittable and separate inside the allotted width, initially and after every selection. Selection and reselection counters exercise real taps and the real binding transaction.
-- Caller-owned external/invalid selection and omitted callback checks.
+- `InteractionTests`: 2/3/5 IDs × Floating/Morphing × 320/375/420 pt × Large/accessibility3, long labels, LTR/RTL; narrow five-item tests also cover XSmall and accessibility1–5. Short-label cases exercise the expanding layout. Each target must be at least 44 × 44 pt, visible, hittable and separate inside the allotted width, initially and after every selection. Selection and reselection counters exercise real taps. A UIKit representable probe records the actual rendered UI transaction, independently of the transaction argument received by a custom Binding setter.
+- Caller-owned external/invalid selection, omitted callback, normal UI animation and independent Reduce Motion/Transparency combinations.
 - `DemoTests`: 60% progress, Create save/cancel, Focus on/off, native share presentation/dismissal, rapid style switches and relaunch.
 
 The test host runs inside a vertical scroll container so contributors can explore sizes beyond the documented matrix; the automatic geometry gate still requires every tested button to fit onscreen. Visual truncation is allowed while the full title remains the accessibility label.

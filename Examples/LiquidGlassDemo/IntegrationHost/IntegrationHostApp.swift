@@ -1,5 +1,6 @@
 import LiquidUI
 import SwiftUI
+import UIKit
 
 @main
 struct IntegrationHostApp: App {
@@ -22,6 +23,7 @@ struct IntegrationFixture: View {
     @State private var reselections = 0
     @State private var animated = false
     @State private var animationsDisabled = false
+    @State private var uiAnimated = false
     @Environment(\.accessibilityReduceMotion) private var systemMotion
     @Environment(\.accessibilityReduceTransparency) private var systemTransparency
 
@@ -76,6 +78,7 @@ struct IntegrationFixture: View {
             HStack {
                 status("animated", animated ? 1 : 0)
                 status("disabled", animationsDisabled ? 1 : 0)
+                status("uiAnimated", uiAnimated ? 1 : 0)
                 status("systemRT", systemTransparency ? 1 : 0)
                 status("systemRM", systemMotion ? 1 : 0)
             }
@@ -97,6 +100,12 @@ struct IntegrationFixture: View {
                 .frame(width: width)
                 .environment(\.dynamicTypeSize, dynamicType)
                 .environment(\.layoutDirection, rightToLeft ? .rightToLeft : .leftToRight)
+                .overlay {
+                    SelectionTransactionProbe(selection: selection) { uiAnimated = $0 }
+                        .frame(width: 0, height: 0)
+                        .allowsHitTesting(false)
+                        .accessibilityHidden(true)
+                }
                 .padding(.vertical, 20)
                 .frame(maxWidth: .infinity)
             }
@@ -140,5 +149,26 @@ struct IntegrationFixture: View {
         Text("\(name): \(value)")
             .font(.system(size: 11))
             .accessibilityIdentifier(name)
+    }
+}
+
+private struct SelectionTransactionProbe: UIViewRepresentable {
+    let selection: Int
+    let record: (Bool) -> Void
+
+    func makeCoordinator() -> Coordinator { Coordinator() }
+    func makeUIView(context: Context) -> UIView { UIView() }
+
+    func updateUIView(_ view: UIView, context: Context) {
+        let previous = context.coordinator.selection
+        guard previous != selection else { return }
+        context.coordinator.selection = selection
+        guard previous != nil else { return }
+        let animated = context.transaction.animation != nil
+        DispatchQueue.main.async { record(animated) }
+    }
+
+    final class Coordinator {
+        var selection: Int?
     }
 }

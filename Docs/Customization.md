@@ -52,7 +52,7 @@ Selection uses one spring:
 .spring(response: 0.32, dampingFraction: 0.82)
 ```
 
-Adjust it in small increments. A tab switch should communicate state, not delay navigation. Reduce Motion removes the spring transaction and disables descendant animations. Native morphing IDs are omitted in this mode. The normal spring remains when Reduce Motion is off. The integration host records the actual binding transaction rather than testing only a policy helper.
+Adjust it in small increments. A tab switch should communicate state, not delay navigation. Reduce Motion removes the spring transaction and disables descendant animations. Native morphing IDs are omitted in this mode. The normal spring remains when Reduce Motion is off. The integration host records the actual rendered UI transaction and binding writes rather than testing only a policy helper.
 
 ## Add reselect behavior
 
