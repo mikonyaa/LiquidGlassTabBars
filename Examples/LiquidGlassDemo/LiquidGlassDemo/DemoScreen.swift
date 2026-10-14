@@ -4,6 +4,7 @@ struct DemoScreen: View {
     let tab: DemoTab
     let palette: DemoPalette
     @Binding var fixture: DemoFixture
+    var controlPanelHeight: CGFloat = 50
     @State private var isCreatePresented = false
 
     var body: some View {
@@ -12,7 +13,7 @@ struct DemoScreen: View {
 
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 18) {
-                    Color.clear.frame(height: 62)
+                    Color.clear.frame(height: controlPanelHeight + 12)
 
                     header
                     progressCard

@@ -7,35 +7,29 @@ final class DemoTests: XCTestCase {
         continueAfterFailure = false
     }
 
-    func testMenuHitTestingDiagnostics() {
-        for initialStyle in ["System", "Floating"] {
+    func testNativeMenuTargetsAtLargeText() {
+        for style in ["--floating", "--morphing"] {
             let app = XCUIApplication()
-            app.launchArguments = ["-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
-            if initialStyle == "Floating" { app.launchArguments.append("--floating") }
+            app.launchArguments = [
+                style, "--graphite", "--accessibility-controls",
+                "-AppleLanguages", "(en)", "-AppleLocale", "en_US"
+            ]
             app.launch()
-            let choices = [("Tab bar style", "Morphing"), ("Color palette", "Graphite")]
-            for (label, choice) in choices {
-                let menu = app.buttons[label]
-                XCTAssertTrue(menu.waitForExistence(timeout: 5), app.debugDescription)
-                let native = menu.buttons.firstMatch
-                let detail = "MENU_PROBE \(initialStyle) \(label) semanticHit=\(menu.isHittable) "
-                    + "nativeCount=\(menu.buttons.count) nativeHit=\(native.exists && native.isHittable) "
-                    + "frame=\(menu.frame)"
-                print(detail)
-                let before = XCTAttachment(string: detail + "\n" + app.debugDescription)
-                before.lifetime = .keepAlways
-                add(before)
-                // Diagnostic touch distinguishes AX targeting from actual event routing.
-                // The release regression continues to require a truly hittable Button.
-                menu.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
-                let action = app.buttons[choice]
-                let opened = action.waitForExistence(timeout: 3)
-                print("MENU_PROBE \(initialStyle) \(label) actualTouchOpened=\(opened)")
-                let after = XCTAttachment(string: app.debugDescription)
-                after.lifetime = .keepAlways
-                add(after)
-                if opened { action.tap() }
+            let screenshot = XCTAttachment(screenshot: app.screenshot())
+            screenshot.lifetime = .keepAlways
+            add(screenshot)
+            for label in ["Tab bar style", "Color palette"] {
+                let button = menuTarget(app.buttons[label], in: app)
+                XCTAssertGreaterThanOrEqual(button.frame.minX, app.frame.midX - 160)
+                XCTAssertLessThanOrEqual(button.frame.maxX, app.frame.midX + 160)
             }
+            XCTAssertFalse(app.buttons["Tab bar style"].frame.intersects(app.buttons["Color palette"].frame))
+            app.buttons["Tab bar style"].tap()
+            app.buttons["System"].tap()
+            XCTAssertEqual(app.buttons["Tab bar style"].value as? String, "System")
+            app.buttons["Color palette"].tap()
+            app.buttons["Classic"].tap()
+            XCTAssertEqual(app.buttons["Color palette"].value as? String, "Classic")
             app.terminate()
         }
     }
@@ -107,17 +101,8 @@ final class DemoTests: XCTestCase {
         XCTAssertTrue(app.buttons["Tab bar style"].waitForExistence(timeout: 5))
     }
 
-    private func menuTarget(_ semantic: XCUIElement, in app: XCUIApplication) -> XCUIElement {
-        XCTAssertTrue(semantic.waitForExistence(timeout: 5), app.debugDescription)
-        // iOS 18 represents Menu with a semantic wrapper around its native Button.
-        let target: XCUIElement
-        if semantic.isHittable {
-            target = semantic
-        } else {
-            XCTAssertEqual(semantic.buttons.count, 1, app.debugDescription)
-            target = semantic.buttons.firstMatch
-        }
-        XCTAssertTrue(target.exists, app.debugDescription)
+    private func menuTarget(_ target: XCUIElement, in app: XCUIApplication) -> XCUIElement {
+        XCTAssertTrue(target.waitForExistence(timeout: 5), app.debugDescription)
         XCTAssertTrue(target.isHittable, app.debugDescription)
         XCTAssertGreaterThanOrEqual(target.frame.width, 44)
         XCTAssertGreaterThanOrEqual(target.frame.height, 44)

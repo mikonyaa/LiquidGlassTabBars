@@ -3,6 +3,7 @@ import SwiftUI
 import UIKit
 
 struct DemoRootView: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var selectedTab: DemoTab
     @State private var barStyle: DemoBarStyle
     @State private var palette: DemoPalette
@@ -10,8 +11,10 @@ struct DemoRootView: View {
     @State private var transitionSnapshot: UIImage?
     @State private var transitionSnapshotOpacity = 0.0
     @State private var transitionID = UUID()
+    @State private var controlPanelHeight: CGFloat = 50
 
     private let showcaseMode: Bool
+    private let accessibilityControls: Bool
 
     init() {
         let arguments = ProcessInfo.processInfo.arguments
@@ -40,6 +43,7 @@ struct DemoRootView: View {
         _barStyle = State(initialValue: initialStyle)
         _palette = State(initialValue: arguments.contains("--graphite") ? .graphite : .classic)
         showcaseMode = arguments.contains("--showcase")
+        accessibilityControls = arguments.contains("--accessibility-controls")
     }
 
     private var items: [LiquidTabItem<DemoTab>] {
@@ -58,6 +62,15 @@ struct DemoRootView: View {
             }
 
             controlPanel
+                .dynamicTypeSize(accessibilityControls ? .accessibility5 : dynamicTypeSize)
+                .frame(width: accessibilityControls ? 320 : nil)
+                .background {
+                    GeometryReader { geometry in
+                        Color.clear.preference(key: DemoControlsHeightKey.self, value: geometry.size.height)
+                    }
+                    .allowsHitTesting(false)
+                }
+                .onPreferenceChange(DemoControlsHeightKey.self) { controlPanelHeight = $0 }
                 .padding(.horizontal, 16)
                 .padding(.top, 8)
         }
@@ -92,7 +105,7 @@ struct DemoRootView: View {
             tint: palette.theme.tint
         ) {
             ForEach(DemoTab.allCases) { tab in
-                DemoScreen(tab: tab, palette: palette, fixture: $fixture)
+                DemoScreen(tab: tab, palette: palette, fixture: $fixture, controlPanelHeight: controlPanelHeight)
                     .tabItem {
                         Label(tab.title, systemImage: tab.systemImage)
                     }
@@ -102,7 +115,7 @@ struct DemoRootView: View {
     }
 
     private var customTabs: some View {
-        DemoScreen(tab: selectedTab, palette: palette, fixture: $fixture)
+        DemoScreen(tab: selectedTab, palette: palette, fixture: $fixture, controlPanelHeight: controlPanelHeight)
             .safeAreaInset(edge: .bottom, spacing: 0) {
                 LiquidTabBar(
                     selection: $selectedTab,
@@ -119,15 +132,20 @@ struct DemoRootView: View {
 
     @ViewBuilder
     private var controlPanel: some View {
-        let panel = HStack(spacing: 10) {
-            styleMenu
-
-            Spacer(minLength: 12)
-
-            paletteMenu
+        let panel = ViewThatFits(in: .horizontal) {
+            HStack(spacing: 10) {
+                styleMenu.fixedSize(horizontal: true, vertical: false)
+                Spacer(minLength: 12)
+                paletteMenu.fixedSize(horizontal: true, vertical: false)
+            }
+            VStack(alignment: .leading, spacing: 6) {
+                styleMenu
+                paletteMenu
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(.horizontal, 14)
-        .frame(height: 50)
+        .padding(.vertical, 3)
 
         panel
             .background(
@@ -289,12 +307,15 @@ private struct DemoMenuButton: UIViewRepresentable {
     func updateUIView(_ button: UIButton, context: Context) {
         var configuration = UIButton.Configuration.plain()
         configuration.title = title
+        configuration.titleLineBreakMode = .byTruncatingTail
         configuration.image = UIImage(systemName: symbol)
         configuration.imagePadding = 6
         configuration.contentInsets = .zero
         configuration.baseForegroundColor = .systemBlue
         configuration.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(textStyle: .subheadline)
-        let descriptor = UIFont.preferredFont(forTextStyle: .subheadline).fontDescriptor.addingAttributes([
+        let traits = UITraitCollection(preferredContentSizeCategory: context.environment.dynamicTypeSize.uiCategory)
+        let preferredFont = UIFont.preferredFont(forTextStyle: .subheadline, compatibleWith: traits)
+        let descriptor = preferredFont.fontDescriptor.addingAttributes([
             .traits: [UIFontDescriptor.TraitKey.weight: UIFont.Weight.semibold.rawValue]
         ])
         let font = UIFont(descriptor: descriptor, size: 0)
@@ -317,7 +338,35 @@ private struct DemoMenuButton: UIViewRepresentable {
 
     func sizeThatFits(_ proposal: ProposedViewSize, uiView: UIButton, context: Context) -> CGSize? {
         let size = uiView.intrinsicContentSize
-        return CGSize(width: max(44, size.width), height: max(44, size.height))
+        return CGSize(
+            width: min(max(44, size.width), max(44, proposal.width ?? size.width)),
+            height: min(max(44, size.height), max(44, proposal.height ?? size.height))
+        )
+    }
+}
+
+private struct DemoControlsHeightKey: PreferenceKey {
+    static var defaultValue: CGFloat { 50 }
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) { value = nextValue() }
+}
+
+private extension DynamicTypeSize {
+    var uiCategory: UIContentSizeCategory {
+        switch self {
+        case .xSmall: .extraSmall
+        case .small: .small
+        case .medium: .medium
+        case .large: .large
+        case .xLarge: .extraLarge
+        case .xxLarge: .extraExtraLarge
+        case .xxxLarge: .extraExtraExtraLarge
+        case .accessibility1: .accessibilityMedium
+        case .accessibility2: .accessibilityLarge
+        case .accessibility3: .accessibilityExtraLarge
+        case .accessibility4: .accessibilityExtraExtraLarge
+        case .accessibility5: .accessibilityExtraExtraExtraLarge
+        @unknown default: .large
+        }
     }
 }
 
