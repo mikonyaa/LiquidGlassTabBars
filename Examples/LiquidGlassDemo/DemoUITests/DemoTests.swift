@@ -55,19 +55,14 @@ final class DemoTests: XCTestCase {
             let screenshot = XCTAttachment(screenshot: app.screenshot())
             screenshot.lifetime = .keepAlways
             add(screenshot)
-            XCTAssertTrue(menu.waitForExistence(timeout: 5), app.debugDescription)
-            XCTAssertTrue(menu.isHittable, app.debugDescription)
-            XCTAssertGreaterThanOrEqual(menu.frame.height, 44)
-            menu.tap()
+            menuTarget(menu, in: app).tap()
             app.buttons[style].tap()
             XCTAssertEqual(menu.value as? String, style)
             XCTAssertEqual(app.tabBars.count, style == "System" ? 1 : 0)
         }
         for color in ["Graphite", "Classic"] {
             let menu = app.buttons["Color palette"]
-            XCTAssertTrue(menu.isHittable, app.debugDescription)
-            XCTAssertGreaterThanOrEqual(menu.frame.height, 44)
-            menu.tap()
+            menuTarget(menu, in: app).tap()
             app.buttons[color].tap()
             XCTAssertEqual(menu.value as? String, color)
         }
@@ -77,5 +72,22 @@ final class DemoTests: XCTestCase {
         app.terminate()
         app.launch()
         XCTAssertTrue(app.buttons["Tab bar style"].waitForExistence(timeout: 5))
+    }
+
+    private func menuTarget(_ semantic: XCUIElement, in app: XCUIApplication) -> XCUIElement {
+        XCTAssertTrue(semantic.waitForExistence(timeout: 5), app.debugDescription)
+        // iOS 18 represents Menu with a semantic wrapper around its native Button.
+        let target: XCUIElement
+        if semantic.isHittable {
+            target = semantic
+        } else {
+            XCTAssertEqual(semantic.buttons.count, 1, app.debugDescription)
+            target = semantic.buttons.firstMatch
+        }
+        XCTAssertTrue(target.exists, app.debugDescription)
+        XCTAssertTrue(target.isHittable, app.debugDescription)
+        XCTAssertGreaterThanOrEqual(target.frame.width, 44)
+        XCTAssertGreaterThanOrEqual(target.frame.height, 44)
+        return target
     }
 }
