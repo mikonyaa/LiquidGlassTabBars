@@ -64,13 +64,7 @@ struct DemoRootView: View {
             controlPanel
                 .dynamicTypeSize(accessibilityControls ? .accessibility5 : dynamicTypeSize)
                 .frame(width: accessibilityControls ? 320 : nil)
-                .background {
-                    GeometryReader { geometry in
-                        Color.clear.preference(key: DemoControlsHeightKey.self, value: geometry.size.height)
-                    }
-                    .allowsHitTesting(false)
-                }
-                .onPreferenceChange(DemoControlsHeightKey.self) { controlPanelHeight = $0 }
+                .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { controlPanelHeight = $0 }
                 .padding(.horizontal, 16)
                 .padding(.top, 8)
         }
@@ -343,11 +337,6 @@ private struct DemoMenuButton: UIViewRepresentable {
             height: min(max(44, size.height), max(44, proposal.height ?? size.height))
         )
     }
-}
-
-private struct DemoControlsHeightKey: PreferenceKey {
-    static var defaultValue: CGFloat { 50 }
-    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) { value = nextValue() }
 }
 
 private extension DynamicTypeSize {

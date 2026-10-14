@@ -24,6 +24,8 @@ final class DemoTests: XCTestCase {
                 XCTAssertLessThanOrEqual(button.frame.maxX, app.frame.midX + 160)
             }
             XCTAssertFalse(app.buttons["Tab bar style"].frame.intersects(app.buttons["Color palette"].frame))
+            let panelBottom = max(app.buttons["Tab bar style"].frame.maxY, app.buttons["Color palette"].frame.maxY)
+            XCTAssertGreaterThanOrEqual(app.staticTexts["A clear view of today"].frame.minY, panelBottom + 8)
             app.buttons["Tab bar style"].tap()
             app.buttons["System"].tap()
             XCTAssertEqual(app.buttons["Tab bar style"].value as? String, "System")
