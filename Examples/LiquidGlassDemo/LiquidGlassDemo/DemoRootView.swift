@@ -137,6 +137,7 @@ struct DemoRootView: View {
             .overlay {
                 RoundedRectangle(cornerRadius: 22)
                     .stroke(.white.opacity(0.12), lineWidth: 0.75)
+                    .allowsHitTesting(false)
             }
             .shadow(color: .black.opacity(0.16), radius: 12, y: 5)
     }
