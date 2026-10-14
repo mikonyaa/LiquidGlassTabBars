@@ -64,7 +64,9 @@ git diff --exit-code -- Examples/LiquidGlassDemo/LiquidGlassDemo.xcodeproj
 git diff --exit-code -- Examples/LiquidGlassDemo/LiquidGlassDemo.xcodeproj
 ```
 
-CI preserves Xcode 16.4/macOS 15 and Xcode 26.5/macOS 26 lanes. Both run package, consumer, build, regeneration and runtime UI gates. Its tag patterns match existing `1.0.x` tags and legacy `v`-prefixed equivalents. Existing release tags are never changed.
+CI preserves Xcode 16.4/macOS 15 and Xcode 26.5/macOS 26 lanes. Runtime selection is explicit: iOS 18.5/iPhone 16 Pro Max for compatibility and iOS 26.5/iPhone 17 Pro Max for current. This avoids selecting a newer global CoreSimulator runtime than the compatibility SDK. Both run package, consumer, build, regeneration and runtime UI gates. Its tag patterns match existing `1.0.x` tags and legacy `v`-prefixed equivalents. Existing release tags are never changed.
+
+Runtime/SDK availability was checked against the official [macOS 15](https://github.com/actions/runner-images/blob/main/images/macos/macos-15-Readme.md) and [macOS 26](https://github.com/actions/runner-images/blob/main/images/macos/macos-26-Readme.md) image inventories; job evidence remains the actual validation gate.
 
 ## Runtime media
 

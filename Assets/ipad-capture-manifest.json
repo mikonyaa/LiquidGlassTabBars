@@ -1,12 +1,12 @@
 {
   "capture_type": "iPad Simulator runtime screenshot; not physical-device or multitasking validation",
-  "sha": "8bb008e93141de153b4568e5d71a853597ca7ebf",
+  "sha": "b8b1e5896eb2d768c54e6f74eb2a737d0a254ad0",
   "device_type": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M4-8GB",
   "os": "26.5",
-  "captured_at_utc": "2026-10-14T00:13:27.880916+00:00",
+  "captured_at_utc": "2026-10-14T00:47:17.185808+00:00",
   "xcode": "Xcode 27.0\nBuild version 27A266a",
   "sha256": {
-    "Screenshots/ipad-floating-graphite.png": "677fa2ac4b30b6e29afd5b494f89e2c84f9ed30325ef948e86af3cfb03559060"
+    "Screenshots/ipad-floating-graphite.png": "b719f810e73cdd979a0157ff0f7c743621545f2eb1f291416c659ad76294877b"
   },
   "commands": [
     [
@@ -28,27 +28,27 @@
       "xcrun",
       "simctl",
       "boot",
-      "F8F6974A-6A63-4149-BC26-90814FE6212D"
+      "1072EB4E-A201-4AB0-B108-54BA293D3CA9"
     ],
     [
       "xcrun",
       "simctl",
       "bootstatus",
-      "F8F6974A-6A63-4149-BC26-90814FE6212D",
+      "1072EB4E-A201-4AB0-B108-54BA293D3CA9",
       "-b"
     ],
     [
       "xcrun",
       "simctl",
       "install",
-      "F8F6974A-6A63-4149-BC26-90814FE6212D",
+      "1072EB4E-A201-4AB0-B108-54BA293D3CA9",
       "<work>/integration-derived/Build/Products/Debug-iphonesimulator/LiquidGlassDemo.app"
     ],
     [
       "xcrun",
       "simctl",
       "launch",
-      "F8F6974A-6A63-4149-BC26-90814FE6212D",
+      "1072EB4E-A201-4AB0-B108-54BA293D3CA9",
       "dev.liquidglasstemplates.demo",
       "--floating",
       "--graphite"
@@ -57,7 +57,7 @@
       "xcrun",
       "simctl",
       "io",
-      "F8F6974A-6A63-4149-BC26-90814FE6212D",
+      "1072EB4E-A201-4AB0-B108-54BA293D3CA9",
       "screenshot",
       "<scratch>/ipad-floating-graphite.png"
     ],

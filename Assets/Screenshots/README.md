@@ -1,8 +1,8 @@
 # Runtime screenshots
 
-`system-classic.png`, `floating-graphite.png` and `morphing-classic.png` were captured from the running demo on an iPhone 16 Pro Max Simulator, iOS 26.5, using Xcode 27.0. Their 1320 × 2868 PNGs correspond to source `d06d7e69a825bcd87683a135463df4b149509c62`. The library, demo and capture script at the later test-only commit `8bb008e` are identical to that capture source.
+`system-classic.png`, `floating-graphite.png` and `morphing-classic.png` were captured from the running demo on an iPhone 16 Pro Max Simulator, iOS 26.5, using Xcode 27.0. Their 1320 × 2868 PNGs correspond to source `b8b1e5896eb2d768c54e6f74eb2a737d0a254ad0`.
 
-See [capture manifest](../capture-manifest.json) for SHA-256 hashes, capture time and device/runtime metadata, and [commands](../capture-commands.txt) for the recording steps. The manifest records an initially dirty checkout: the sole extra file was a command log from the previous capture attempt; production source matched the recorded commit.
+See [capture manifest](../capture-manifest.json) for SHA-256 hashes, capture time and device/runtime metadata, and [commands](../capture-commands.txt) for the recording steps. The capture began with a clean checkout.
 
 `ipad-floating-graphite.png` is a separate iPad Pro 11-inch (M4) Simulator capture on iOS 26.5. Its [own manifest](../ipad-capture-manifest.json) records the source and hash. A portrait screenshot confirms this rendered layout; it does not verify multitasking or multiple windows.
 
@@ -14,6 +14,6 @@ LIQUID_DEMO_DEVICE_TYPE=com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M
 LIQUID_DEMO_OUTPUT=/tmp/liquid-ipad Scripts/record_showcase.sh
 ```
 
-Reduced-transparency fallback is checked by hosted runtime pixel comparisons in the integration suite. These use actual accessibility settings, both custom variants and six themes. See [validation](../../Docs/Validation.md) for how to reproduce them and the remaining physical-device checks.
+`reduce-transparency-violet.png` is a runtime screenshot during the public-API integration test: five long labels, 320 pt, accessibility4 and RTL, with actual Reduce Transparency/Motion values visible. Its [own manifest](../reduced-transparency-capture-manifest.json) records that fixture and hash. Hosted pixel comparisons check both variants and six themes over bright/dark backdrops. See [validation](../../Docs/Validation.md) for reproduction and remaining physical-device checks.
 
 These are Simulator captures, not synthetic previews or physical-device validation. Keep variant names stable; capture new files and update provenance together when the source changes.

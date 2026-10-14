@@ -1,6 +1,6 @@
 # GIFs
 
-`liquid-tab-bars.gif` is an actual Simulator runtime recording of the RC demo: iPhone 16 Pro Max, iOS 26.5, Xcode 27.0, source `d06d7e69a825bcd87683a135463df4b149509c62`. It is 400 × 869 px, 226 frames at 20 fps (11.3 seconds), approximately 1.9 MiB. The library/demo/capture sources at test-only commit `8bb008e` are unchanged.
+`liquid-tab-bars.gif` is an actual Simulator runtime recording of the scripted RC showcase: iPhone 16 Pro Max, iOS 26.5, Xcode 27.0, source `b8b1e5896eb2d768c54e6f74eb2a737d0a254ad0`. It is 400 × 869 px, 177 frames at 20 fps (8.85 seconds), approximately 1.6 MiB. The recording includes System / Classic, Floating / Graphite and Morphing / Classic with changing destinations.
 
 The [manifest](../capture-manifest.json) records its exact hash, source and capture metadata; [commands](../capture-commands.txt) show the actual steps. This is runtime evidence for the recorded source, not a tagged release or physical-device validation.
 
