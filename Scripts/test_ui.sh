@@ -1,6 +1,11 @@
 #!/bin/bash
 set -euo pipefail
 repo_root="$(cd "$(dirname "$0")/.." && pwd)"
+test_scope="${LIQUID_TEST_SCOPE:-all}"
+case "$test_scope" in
+  all|demo|integration) ;;
+  *) echo "LIQUID_TEST_SCOPE must be all, demo or integration" >&2; exit 2 ;;
+esac
 test_output="${LIQUID_TEST_OUTPUT:-$(mktemp -d "${TMPDIR:-/tmp}/liquid-ui-tests.XXXXXX")}"
 mkdir -p "$test_output"
 device_id=""
@@ -22,17 +27,23 @@ print(max(r,key=lambda r: tuple(map(int,r["version"].split("."))))["identifier"]
 # A Pro Max is wide enough to host the 420pt fixture without cropping it.
 device_type="${LIQUID_TEST_DEVICE_TYPE:-com.apple.CoreSimulator.SimDeviceType.iPhone-16-Pro-Max}"
 device_id="$(xcrun simctl create "LiquidUI integration $$" "$device_type" "$runtime_id")"
-printf 'SHA: %s\nSimulator: %s\nRuntime: %s\n' "$(git -C "$repo_root" rev-parse HEAD)" "$device_id" "$runtime_id"
+printf 'SHA: %s\nScope: %s\nSimulator: %s\nRuntime: %s\n' "$(git -C "$repo_root" rev-parse HEAD)" "$test_scope" "$device_id" "$runtime_id"
 swift --version
 xcodebuild -version
 xcrun simctl boot "$device_id"
 xcrun simctl bootstatus "$device_id" -b
 test_project="$repo_root/Examples/LiquidGlassDemo/LiquidGlassDemo.xcodeproj"
 # Exercise native demo controls before the long matrix to catch SDK UI differences early.
-xcodebuild -project "$test_project" -scheme LiquidGlassDemo \
+if [ "$test_scope" != integration ]; then
+  xcodebuild -project "$test_project" -scheme LiquidGlassDemo \
   -destination "platform=iOS Simulator,id=$device_id" -derivedDataPath "$test_output/DerivedData" \
   -resultBundlePath "$test_output/demo-smoke.xcresult" -parallel-testing-enabled NO -collect-test-diagnostics never \
   -only-testing:DemoUITests CODE_SIGNING_ALLOWED=NO test
+fi
+if [ "$test_scope" = demo ]; then
+  echo "Demo results: $test_output"
+  exit 0
+fi
 # Environment accessibility values are read-only. Set actual Simulator preferences using Settings UI first.
 xcodebuild -project "$test_project" -scheme LiquidGlassDemo \
   -destination "platform=iOS Simulator,id=$device_id" -derivedDataPath "$test_output/DerivedData" \

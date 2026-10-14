@@ -42,6 +42,8 @@ Scripts/test_ui.sh
 
 `test_ui.sh` selects an installed iOS runtime and creates a Pro Max Simulator. It runs a small native-demo smoke first, configures actual accessibility settings through Settings UI, runs the full shared scheme and removes only its own device. The early smoke catches OS-specific share/menu incompatibilities before the long layout matrix; settings are reset before the hosted surface tests. Set `LIQUID_TEST_RUNTIME`, `LIQUID_TEST_DEVICE_TYPE` and `LIQUID_TEST_OUTPUT` to choose an installed runtime/type and retain results. Verbose sysdiagnose collection is disabled; assertions, screenshots and `.xcresult` attachments remain available.
 
+CI exposes the early smoke as its own step with `LIQUID_TEST_SCOPE=demo`, followed by `LIQUID_TEST_SCOPE=integration` for Settings and the complete shared scheme. Each invocation owns a fresh Simulator; result bundles and DerivedData use the same output directory. The default `all` scope retains the single-invocation sequence above. Invalid scopes exit 2 before creating a Simulator.
+
 For a preconfigured existing destination, run:
 
 ```bash

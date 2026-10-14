@@ -74,11 +74,19 @@ jobs:
         env:
           LIQUID_CONSUMER_OUTPUT: ${{ runner.temp }}/liquid-consumers
         run: Scripts/validate_consumers.sh | tee "$RUNNER_TEMP/liquid-validation/consumers.log"
+      - name: Native demo smoke tests
+        env:
+          LIQUID_TEST_OUTPUT: ${{ runner.temp }}/liquid-validation/ui
+          LIQUID_TEST_RUNTIME: ${{ matrix.runtime }}
+          LIQUID_TEST_DEVICE_TYPE: ${{ matrix.device_type }}
+          LIQUID_TEST_SCOPE: demo
+        run: Scripts/test_ui.sh > "$RUNNER_TEMP/liquid-validation/ui-demo.log" 2>&1
       - name: Hosted and UI integration tests
         env:
           LIQUID_TEST_OUTPUT: ${{ runner.temp }}/liquid-validation/ui
           LIQUID_TEST_RUNTIME: ${{ matrix.runtime }}
           LIQUID_TEST_DEVICE_TYPE: ${{ matrix.device_type }}
+          LIQUID_TEST_SCOPE: integration
         run: Scripts/test_ui.sh > "$RUNNER_TEMP/liquid-validation/ui.log" 2>&1
       - name: Reproduce checked-in project twice
         run: |

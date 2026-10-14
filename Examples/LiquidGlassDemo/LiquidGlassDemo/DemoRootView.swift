@@ -143,55 +143,33 @@ struct DemoRootView: View {
     }
 
     private var styleMenu: some View {
-        Menu {
-            ForEach(DemoBarStyle.allCases) { style in
-                Button {
+        DemoMenuButton(
+            name: "Tab bar style", title: barStyle.title, symbol: barStyle.symbol,
+            choices: DemoBarStyle.allCases.map { style in
+                DemoMenuButton.Choice(title: style.title, symbol: style.symbol, selected: barStyle == style) {
                     changePresentation(
                         tab: selectedTab,
                         style: style,
                         palette: palette
                     )
-                } label: {
-                    Label(
-                        style.title,
-                        systemImage: barStyle == style ? "checkmark" : style.symbol
-                    )
                 }
             }
-        } label: {
-            Label(barStyle.title, systemImage: barStyle.symbol)
-                .font(.subheadline.weight(.semibold))
-                .frame(minWidth: 44, minHeight: 44)
-                .contentShape(Rectangle())
-        }
-        .accessibilityLabel("Tab bar style")
-        .accessibilityValue(barStyle.title)
+        )
     }
 
     private var paletteMenu: some View {
-        Menu {
-            ForEach(DemoPalette.allCases) { candidate in
-                Button {
+        DemoMenuButton(
+            name: "Color palette", title: palette.title, symbol: "paintpalette.fill",
+            choices: DemoPalette.allCases.map { candidate in
+                DemoMenuButton.Choice(title: candidate.title, symbol: "circle.fill", selected: palette == candidate) {
                     changePresentation(
                         tab: selectedTab,
                         style: barStyle,
                         palette: candidate
                     )
-                } label: {
-                    Label(
-                        candidate.title,
-                        systemImage: palette == candidate ? "checkmark" : "circle.fill"
-                    )
                 }
             }
-        } label: {
-            Label(palette.title, systemImage: "paintpalette.fill")
-                .font(.subheadline.weight(.semibold))
-                .frame(minWidth: 44, minHeight: 44)
-                .contentShape(Rectangle())
-        }
-        .accessibilityLabel("Color palette")
-        .accessibilityValue(palette.title)
+        )
     }
 
     @MainActor
@@ -283,6 +261,63 @@ struct DemoRootView: View {
 
     private func pause(milliseconds: UInt64) async {
         try? await Task.sleep(nanoseconds: milliseconds * 1_000_000)
+    }
+}
+
+@MainActor
+private struct DemoMenuButton: UIViewRepresentable {
+    struct Choice {
+        let title: String
+        let symbol: String
+        let selected: Bool
+        let action: @MainActor () -> Void
+    }
+
+    let name: String
+    let title: String
+    let symbol: String
+    let choices: [Choice]
+
+    func makeUIView(context: Context) -> UIButton {
+        let button = UIButton(type: .system)
+        button.showsMenuAsPrimaryAction = true
+        button.isAccessibilityElement = true
+        button.titleLabel?.adjustsFontForContentSizeCategory = true
+        return button
+    }
+
+    func updateUIView(_ button: UIButton, context: Context) {
+        var configuration = UIButton.Configuration.plain()
+        configuration.title = title
+        configuration.image = UIImage(systemName: symbol)
+        configuration.imagePadding = 6
+        configuration.contentInsets = .zero
+        configuration.baseForegroundColor = .systemBlue
+        configuration.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(textStyle: .subheadline)
+        let descriptor = UIFont.preferredFont(forTextStyle: .subheadline).fontDescriptor.addingAttributes([
+            .traits: [UIFontDescriptor.TraitKey.weight: UIFont.Weight.semibold.rawValue]
+        ])
+        let font = UIFont(descriptor: descriptor, size: 0)
+        configuration.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { attributes in
+            var result = attributes
+            result.font = font
+            return result
+        }
+        button.configuration = configuration
+        button.accessibilityLabel = name
+        button.accessibilityValue = title
+        button.menu = UIMenu(children: choices.map { choice in
+            UIAction(
+                title: choice.title, image: UIImage(systemName: choice.symbol),
+                state: choice.selected ? .on : .off
+            ) { _ in choice.action() }
+        })
+        button.invalidateIntrinsicContentSize()
+    }
+
+    func sizeThatFits(_ proposal: ProposedViewSize, uiView: UIButton, context: Context) -> CGSize? {
+        let size = uiView.intrinsicContentSize
+        return CGSize(width: max(44, size.width), height: max(44, size.height))
     }
 }
 
