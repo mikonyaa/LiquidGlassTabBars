@@ -160,8 +160,11 @@ struct DemoRootView: View {
         } label: {
             Label(barStyle.title, systemImage: barStyle.symbol)
                 .font(.subheadline.weight(.semibold))
+                .frame(minWidth: 44, minHeight: 44)
+                .contentShape(Rectangle())
+                .accessibilityLabel("Tab bar style")
+                .accessibilityValue(barStyle.title)
         }
-        .accessibilityLabel("Tab bar style")
     }
 
     private var paletteMenu: some View {
@@ -183,8 +186,11 @@ struct DemoRootView: View {
         } label: {
             Label(palette.title, systemImage: "paintpalette.fill")
                 .font(.subheadline.weight(.semibold))
+                .frame(minWidth: 44, minHeight: 44)
+                .contentShape(Rectangle())
+                .accessibilityLabel("Color palette")
+                .accessibilityValue(palette.title)
         }
-        .accessibilityLabel("Color palette")
     }
 
     @MainActor

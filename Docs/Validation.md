@@ -40,7 +40,7 @@ Scripts/test_ui.sh
 
 `validate_consumers.sh` creates two packages outside the source repository. One resolves exact remote `1.0.3`; the other depends on the local RC path. Both import SwiftUI and LiquidUI, build custom Int-ID tabs, an old-signature theme initializer, a binding/reselection closure and system tabs. Set `LIQUID_CONSUMER_OUTPUT` to retain manifests and resolve/build outputs in a chosen external directory.
 
-`test_ui.sh` selects an installed iOS runtime, creates a Pro Max Simulator, configures actual accessibility settings through Settings UI, runs the shared scheme and removes only its own device. Set `LIQUID_TEST_RUNTIME`, `LIQUID_TEST_DEVICE_TYPE` and `LIQUID_TEST_OUTPUT` to choose an installed runtime/type and retain results. Verbose sysdiagnose collection is disabled; assertions, screenshots and `.xcresult` attachments remain available.
+`test_ui.sh` selects an installed iOS runtime and creates a Pro Max Simulator. It runs a small native-demo smoke first, configures actual accessibility settings through Settings UI, runs the full shared scheme and removes only its own device. The early smoke catches OS-specific share/menu incompatibilities before the long layout matrix; settings are reset before the hosted surface tests. Set `LIQUID_TEST_RUNTIME`, `LIQUID_TEST_DEVICE_TYPE` and `LIQUID_TEST_OUTPUT` to choose an installed runtime/type and retain results. Verbose sysdiagnose collection is disabled; assertions, screenshots and `.xcresult` attachments remain available.
 
 For a preconfigured existing destination, run:
 

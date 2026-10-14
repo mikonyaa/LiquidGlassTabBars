@@ -4,7 +4,7 @@ Status: unreleased candidate. Publication of a branch/PR does not create this re
 
 Reduce Transparency now guarantees opaque backing, including translucent custom fallback colors. Morphing adapts to equal-width capsules when expanding labels cannot fit, preserving full accessibility labels and 44 pt targets. Floating exposes one button label without separate visual child elements, keeping RTL selection and reselection reachable. Reduce Motion removes selection spring and native morphing IDs.
 
-The demo's local Create/Focus/Share controls now produce visible results and support cancellation. Progress text and ring share the 3/5 (60%) fixture. Recent rows are explicitly sample content.
+The demo's local Create/Focus/Share controls now produce visible results and support cancellation. Progress text and ring share the 3/5 (60%) fixture. Style/palette menus expose their current values and 44 pt targets. Recent rows are explicitly sample content.
 
 The shared scheme adds a public-API integration host with real accessibility settings, pixel and tap/geometry tests. Release tooling adds two external package consumers, SemVer tag CI, checksum-pinned XcodeGen, isolated capture, provenance and owned-resource cleanup.
 

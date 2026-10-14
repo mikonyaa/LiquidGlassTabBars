@@ -1,6 +1,6 @@
 # RC validation — 14 October 2026
 
-Baseline: `828ded25395e66fa7640d496ecc18cc83e6b1777`, published tag `1.0.3`. Full runtime suite and media source: `b8b1e5896eb2d768c54e6f74eb2a737d0a254ad0`. The library/demo/capture sources remain unchanged. The helper-only test refactor in `b79539f58ecb71c784e2cad089a8d112df71103d` extracts screenshot measurement and round-trip assertions and groups frame parameters. Its fresh four-test runtime recheck passed with zero failures/skips, separately from the full suite.
+Baseline: `828ded25395e66fa7640d496ecc18cc83e6b1777`, published tag `1.0.3`. First full local runtime suite: `b8b1e5896eb2d768c54e6f74eb2a737d0a254ad0`. The library and capture sources remain unchanged; native demo menus receive the separately checked follow-up described below. The helper-only test refactor in `b79539f58ecb71c784e2cad089a8d112df71103d` extracts screenshot measurement and round-trip assertions and groups frame parameters. Its fresh four-test runtime recheck passed with zero failures/skips, separately from the full suite. Each media manifest records its own capture source.
 
 ## Observed regressions and fixes
 
@@ -32,6 +32,7 @@ Local toolchain: macOS 26.7.1, Xcode 27.0 (27A266a), Swift 6.4 (swiftlang-6.4.0.
 | Fresh shared scheme | Exit 0; 14 tests, zero failures/skips; all 67 configurations |
 | Post-refactor focused runtime recheck | Exit 0; four tests, zero failures/skips: Floating RTL round trip, normal UI motion, independent RT/RM and XSmall |
 | Settings lookup recheck after the first compatibility bootstrap | Exit 0; two tests, zero failures/skips: bootstrap and all four independent RT/RM combinations |
+| Native demo controls follow-up | Exit 0; two tests, zero failures/skips: native Share content/dismissal, 44 pt menu targets, actual style/Graphite → Classic values and rapid style changes |
 | XcodeGen 2.45.4 checksum/install and repeated project generation | Exit 0; identical checked-in project/schemes |
 | Script syntax, YAML, relative links and diff hygiene | Exit 0 |
 | Runtime capture / negative device / interrupted recorder | Expected exits 0 / 1 / 143 |
@@ -41,6 +42,8 @@ XcodeGen asset SHA-256: `090ec29491aad50aec10631bf6e62253fed733c50f3aab0f5ffc86b
 CI runs the same automatic boundaries on Xcode 16.4/macOS 15/iOS 18.5 and Xcode 26.5/macOS 26/iOS 26.5. Explicit Bash enables pipeline failure propagation for logged commands. Actual job results are separate from this local run; the workflow retains validation logs and result bundles as artifacts.
 
 The first GitHub compatibility bootstrap exposed an OS difference in Settings: on iOS 18.5 the `REDUCE_TRANSPARENCY` identifier belongs to the row's StaticText, while its native Switch has the `Reduce Transparency` label. The actual failure hierarchy was retained. Test-helper correction `b3e862d66adf1a530c33cee72b1456efd112b391` accepts the switch identifier or English label for both effects. Real switch-value assertions and the app's environment checks remain. The fresh local bootstrap/mixed-effects recheck passed; production code and media are unchanged.
+
+The subsequent CI on `a6de69f` passed all 14 tests on Xcode 26.5/iOS 26.5. Xcode 16.4/iOS 18.5 passed the surface test and all 11 interaction tests (67 configurations), then exposed two demo differences. Its native share caption contains the actual sample text under `ActivityListView` without the newer private LP caption ID. Its header Menu had an 18 pt labeled virtual wrapper over an unlabeled native Button. The follow-up queries share content within the sheet and places menu labels/current values on their custom labels with a 44 pt minimum/content shape. Both native demo tests pass locally, including real palette changes. Demo smoke now runs before Settings/bootstrap/full matrix so such SDK differences fail early.
 
 ## Runtime media and compatibility
 
