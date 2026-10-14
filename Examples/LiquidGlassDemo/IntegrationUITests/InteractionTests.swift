@@ -119,32 +119,12 @@ final class InteractionTests: XCTestCase {
             app.launch()
             XCTAssertEqual(app.staticTexts["systemRT"].label, "systemRT: \((transparency ?? access) ? 1 : 0)")
             XCTAssertEqual(app.staticTexts["systemRM"].label, "systemRM: \((motion ?? access) ? 1 : 0)")
-            let capture = app.screenshot()
-            guard let bitmap = capture.image.cgImage else {
-                XCTFail("Screenshot has no pixel dimensions")
-                return
-            }
-            let bounds = app.frame
-            guard bounds.width > 0, bounds.height > 0 else {
-                XCTFail("Application has empty bounds")
-                return
-            }
-            let displayScale = CGFloat(bitmap.width) / bounds.width
-            XCTAssertGreaterThanOrEqual(displayScale, 1)
-            XCTAssertLessThanOrEqual(displayScale, 4)
-            XCTAssertEqual(displayScale, CGFloat(bitmap.height) / bounds.height, accuracy: 0.01)
-            // A centered 1pt stroke plus one physical pixel of AX raster rounding.
-            let edgeTolerance = 0.5 + 1 / displayScale + 0.00001
-            let scale = XCTAttachment(string: "Display scale: \(displayScale), edge tolerance: \(edgeTolerance)pt")
-            scale.lifetime = .keepAlways
-            activity.add(scale)
+            let fixture = TargetFixture(count: count, width: width, longLabels: longLabels)
+            guard let edgeTolerance = captureEvidence(in: app, activity: activity) else { return }
             assertTargets(
-                in: app, count: count, width: width, longLabels: longLabels,
+                in: app, fixture: fixture,
                 edgeTolerance: edgeTolerance, activity: activity
             )
-            let screenshot = XCTAttachment(screenshot: capture)
-            screenshot.lifetime = .keepAlways
-            activity.add(screenshot)
             app.buttons[title(for: 0, long: longLabels)].tap()
             XCTAssertEqual(app.staticTexts["writes"].label, "writes: 0")
             XCTAssertEqual(app.staticTexts["reselections"].label, "reselections: 1")
@@ -154,7 +134,7 @@ final class InteractionTests: XCTestCase {
                 XCTAssertEqual(app.staticTexts["writes"].label, "writes: \(index)")
                 XCTAssertEqual(app.staticTexts["uiAnimated"].label, "uiAnimated: \((motion ?? access) ? 0 : 1)")
                 assertTargets(
-                    in: app, count: count, width: width, longLabels: longLabels,
+                    in: app, fixture: fixture,
                     edgeTolerance: edgeTolerance, activity: activity
                 )
                 XCTAssertTrue(app.buttons[title(for: index, long: longLabels)].isSelected)
@@ -163,17 +143,7 @@ final class InteractionTests: XCTestCase {
                 XCTAssertEqual(app.staticTexts["writes"].label, "writes: \(index)")
             }
             if roundTrip {
-                app.buttons[title(for: 0, long: longLabels)].tap()
-                XCTAssertEqual(app.staticTexts["selection"].label, "selection: \(identifiers[0])")
-                XCTAssertEqual(app.staticTexts["writes"].label, "writes: \(count)")
-                assertTargets(
-                    in: app, count: count, width: width, longLabels: longLabels,
-                    edgeTolerance: edgeTolerance, activity: activity
-                )
-                XCTAssertTrue(app.buttons[title(for: 0, long: longLabels)].isSelected)
-                app.buttons[title(for: 0, long: longLabels)].tap()
-                XCTAssertEqual(app.staticTexts["reselections"].label, "reselections: \(count + 1)")
-                XCTAssertEqual(app.staticTexts["writes"].label, "writes: \(count)")
+                assertReturnToFirst(in: app, fixture: fixture, edgeTolerance: edgeTolerance, activity: activity)
             }
             app.terminate()
         }
@@ -183,16 +153,61 @@ final class InteractionTests: XCTestCase {
         long ? "Destination \(index + 1) with a very long localized title" : "Tab \(index + 1)"
     }
 
+    private struct TargetFixture {
+        let count: Int
+        let width: Int
+        let longLabels: Bool
+    }
+
+    private func captureEvidence(in app: XCUIApplication, activity: XCTActivity) -> CGFloat? {
+        let capture = app.screenshot()
+        guard let bitmap = capture.image.cgImage else {
+            XCTFail("Screenshot has no pixel dimensions")
+            return nil
+        }
+        let bounds = app.frame
+        guard bounds.width > 0, bounds.height > 0 else {
+            XCTFail("Application has empty bounds")
+            return nil
+        }
+        let displayScale = CGFloat(bitmap.width) / bounds.width
+        XCTAssertGreaterThanOrEqual(displayScale, 1)
+        XCTAssertLessThanOrEqual(displayScale, 4)
+        XCTAssertEqual(displayScale, CGFloat(bitmap.height) / bounds.height, accuracy: 0.01)
+        // A centered 1pt stroke plus one physical pixel of AX raster rounding.
+        let edgeTolerance = 0.5 + 1 / displayScale + 0.00001
+        let scale = XCTAttachment(string: "Display scale: \(displayScale), edge tolerance: \(edgeTolerance)pt")
+        scale.lifetime = .keepAlways
+        activity.add(scale)
+        let screenshot = XCTAttachment(screenshot: capture)
+        screenshot.lifetime = .keepAlways
+        activity.add(screenshot)
+        return edgeTolerance
+    }
+
+    private func assertReturnToFirst(
+        in app: XCUIApplication, fixture: TargetFixture, edgeTolerance: CGFloat, activity: XCTActivity
+    ) {
+        app.buttons[title(for: 0, long: fixture.longLabels)].tap()
+        XCTAssertEqual(app.staticTexts["selection"].label, "selection: \(identifiers[0])")
+        XCTAssertEqual(app.staticTexts["writes"].label, "writes: \(fixture.count)")
+        assertTargets(in: app, fixture: fixture, edgeTolerance: edgeTolerance, activity: activity)
+        XCTAssertTrue(app.buttons[title(for: 0, long: fixture.longLabels)].isSelected)
+        app.buttons[title(for: 0, long: fixture.longLabels)].tap()
+        XCTAssertEqual(app.staticTexts["reselections"].label, "reselections: \(fixture.count + 1)")
+        XCTAssertEqual(app.staticTexts["writes"].label, "writes: \(fixture.count)")
+    }
+
     private func assertTargets(
-        in app: XCUIApplication, count: Int, width: Int, longLabels: Bool,
+        in app: XCUIApplication, fixture: TargetFixture,
         edgeTolerance: CGFloat, activity: XCTActivity
     ) {
         let appBounds = app.frame
-        let left = appBounds.midX - CGFloat(width) / 2
-        let right = left + CGFloat(width)
+        let left = appBounds.midX - CGFloat(fixture.width) / 2
+        let right = left + CGFloat(fixture.width)
         var frames: [CGRect] = []
-        for index in 0 ..< count {
-            let label = title(for: index, long: longLabels)
+        for index in 0 ..< fixture.count {
+            let label = title(for: index, long: fixture.longLabels)
             let button = app.buttons[label]
             XCTAssertTrue(button.waitForExistence(timeout: 5))
             XCTAssertEqual(app.buttons.matching(NSPredicate(format: "label == %@", label)).count, 1, label)

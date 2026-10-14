@@ -10,6 +10,10 @@ on:
 permissions:
   contents: read
 
+defaults:
+  run:
+    shell: bash
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -28,9 +32,13 @@ jobs:
           - name: compatibility
             runner: macos-15
             developer_dir: /Applications/Xcode_16.4.app/Contents/Developer
+            runtime: com.apple.CoreSimulator.SimRuntime.iOS-18-5
+            device_type: com.apple.CoreSimulator.SimDeviceType.iPhone-16-Pro-Max
           - name: current
             runner: macos-26
             developer_dir: /Applications/Xcode_26.5.app/Contents/Developer
+            runtime: com.apple.CoreSimulator.SimRuntime.iOS-26-5
+            device_type: com.apple.CoreSimulator.SimDeviceType.iPhone-17-Pro-Max
     runs-on: ${{ matrix.runner }}
     # The full real-tap matrix also runs on the slower compatibility runner.
     timeout-minutes: 75
@@ -69,6 +77,8 @@ jobs:
       - name: Hosted and UI integration tests
         env:
           LIQUID_TEST_OUTPUT: ${{ runner.temp }}/liquid-validation/ui
+          LIQUID_TEST_RUNTIME: ${{ matrix.runtime }}
+          LIQUID_TEST_DEVICE_TYPE: ${{ matrix.device_type }}
         run: Scripts/test_ui.sh > "$RUNNER_TEMP/liquid-validation/ui.log" 2>&1
       - name: Reproduce checked-in project twice
         run: |
