@@ -7,6 +7,39 @@ final class DemoTests: XCTestCase {
         continueAfterFailure = false
     }
 
+    func testMenuHitTestingDiagnostics() {
+        for initialStyle in ["System", "Floating"] {
+            let app = XCUIApplication()
+            app.launchArguments = ["-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
+            if initialStyle == "Floating" { app.launchArguments.append("--floating") }
+            app.launch()
+            let choices = [("Tab bar style", "Morphing"), ("Color palette", "Graphite")]
+            for (label, choice) in choices {
+                let menu = app.buttons[label]
+                XCTAssertTrue(menu.waitForExistence(timeout: 5), app.debugDescription)
+                let native = menu.buttons.firstMatch
+                let detail = "MENU_PROBE \(initialStyle) \(label) semanticHit=\(menu.isHittable) "
+                    + "nativeCount=\(menu.buttons.count) nativeHit=\(native.exists && native.isHittable) "
+                    + "frame=\(menu.frame)"
+                print(detail)
+                let before = XCTAttachment(string: detail + "\n" + app.debugDescription)
+                before.lifetime = .keepAlways
+                add(before)
+                // Diagnostic touch distinguishes AX targeting from actual event routing.
+                // The release regression continues to require a truly hittable Button.
+                menu.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+                let action = app.buttons[choice]
+                let opened = action.waitForExistence(timeout: 3)
+                print("MENU_PROBE \(initialStyle) \(label) actualTouchOpened=\(opened)")
+                let after = XCTAttachment(string: app.debugDescription)
+                after.lifetime = .keepAlways
+                add(after)
+                if opened { action.tap() }
+            }
+            app.terminate()
+        }
+    }
+
     func testProgressAndActions() {
         let app = XCUIApplication()
         app.launchArguments = ["--floating", "-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
