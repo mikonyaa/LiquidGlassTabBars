@@ -9,6 +9,7 @@ All notable changes will be documented here.
 - Reduce Transparency composites every fallback color over opaque adaptive system backing.
 - Morphing adapts to equal-width capsules when long labels or Dynamic Type exceed available width.
 - Small text sizes retain a minimum 44 pt button height and sufficient surface padding.
+- Floating keeps selection and reselection reachable in RTL by exposing the button label without separate visual child elements.
 - Reduced motion disables the selection transaction and native morphing IDs.
 - Demo Create, Focus and Share controls perform local actions; progress consistently displays 3/5 (60%).
 - CI runs for existing SemVer tags and checks both SDK lanes, external consumers and hosted/UI tests.

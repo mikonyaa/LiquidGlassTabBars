@@ -11,9 +11,12 @@ The shared `LiquidGlassDemo` scheme includes:
 - Hosted `SurfaceTests`: compare pixels over bright and dark backdrops for four presets, a low-alpha custom theme and `.clear`, with actual Reduce Transparency enabled.
 - `InteractionTests`: 2/3/5 IDs × Floating/Morphing × 320/375/420 pt × Large/accessibility3, long labels, LTR/RTL; narrow five-item tests also cover XSmall and accessibility1–5. Short-label cases exercise the expanding layout. Each target must be at least 44 × 44 pt, visible, hittable and separate inside the allotted width, initially and after every selection. Selection and reselection counters exercise real taps. A UIKit representable probe records the actual rendered UI transaction, independently of the transaction argument received by a custom Binding setter.
 - Caller-owned external/invalid selection, omitted callback, normal UI animation and independent Reduce Motion/Transparency combinations.
+- A focused Floating/RTL round trip (1 → 2 → 3 → 1) checks the formerly unreachable selected short-label target, selected traits and each reselection. Every fixture title identifies one button. Conditional five-second hittability polling retains a failure screenshot and hierarchy; it cannot waive an unreachable target.
 - `DemoTests`: 60% progress, Create save/cancel, Focus on/off, native share presentation/dismissal, rapid style switches and relaunch.
 
 The test host runs inside a vertical scroll container so contributors can explore sizes beyond the documented matrix; the automatic geometry gate still requires every tested button to fit onscreen. Visual truncation is allowed while the full title remains the accessibility label.
+
+Outer accessibility frames include a centered 1 pt stroke and pixel rounding. The allotted-width assertion permits 0.5 pt plus one physical pixel, deriving display scale from the original screenshot and checking both image dimensions against the app bounds. Minimum 44 pt dimensions, non-overlap and screen containment are strict. Each scenario retains the scale, bounds and screenshot evidence.
 
 ## Reproduce
 

@@ -18,6 +18,8 @@ IDs must be unique and stable. Selection must belong to the current items; the a
 
 For 2–5 items, provide at least 320 pt after outer padding. Morphing measures the expanding row first and uses equal-width individual capsules when it cannot fit. Compact spacing is capped at 8 pt to keep hit targets separate. Selected titles may truncate visually; VoiceOver receives the full title. Dynamic Type scales text and height in both layouts. Below 320 pt, use the system variant or validate your specific placement separately.
 
+Floating gives the native Button its full title and selected trait while hiding the icon/caption's separate accessibility elements. This keeps the selected RTL target reachable without replacing the Button action or selection binding.
+
 ## Change the palette
 
 `LiquidTabBarTheme` exposes only values that materially affect the controls:

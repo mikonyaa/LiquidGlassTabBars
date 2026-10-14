@@ -2,7 +2,7 @@
 
 Status: unreleased candidate. Publication of a branch/PR does not create this release or complete the manual device checklist.
 
-Reduce Transparency now guarantees opaque backing, including translucent custom fallback colors. Morphing adapts to equal-width capsules when expanding labels cannot fit, preserving full accessibility labels and 44 pt targets. Reduce Motion removes selection spring and native morphing IDs.
+Reduce Transparency now guarantees opaque backing, including translucent custom fallback colors. Morphing adapts to equal-width capsules when expanding labels cannot fit, preserving full accessibility labels and 44 pt targets. Floating exposes one button label without separate visual child elements, keeping RTL selection and reselection reachable. Reduce Motion removes selection spring and native morphing IDs.
 
 The demo's local Create/Focus/Share controls now produce visible results and support cancellation. Progress text and ring share the 3/5 (60%) fixture. Recent rows are explicitly sample content.
 

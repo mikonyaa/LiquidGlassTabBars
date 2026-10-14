@@ -103,6 +103,8 @@ public struct LiquidTabBar<ID: Hashable & Sendable>: View {
                 .foregroundStyle(isSelected ? theme.tint : theme.inactiveForeground)
                 .padding(.horizontal, 6)
                 .padding(.vertical, 6)
+                // The Button supplies the full label; visual children must not split its AX target.
+                .accessibilityHidden(true)
             }
             .frame(minWidth: 44, maxWidth: .infinity)
             .frame(height: itemHeight)
