@@ -24,7 +24,9 @@ enum AccessibilitySettings {
         XCTAssertTrue(accessibility.waitForExistence(timeout: 5), settings.debugDescription)
         accessibility.tap()
         settings.staticTexts["Display & Text Size"].tap()
-        let transparency = settings.switches["REDUCE_TRANSPARENCY"]
+        let transparency = effectSwitch(
+            in: settings, identifier: "REDUCE_TRANSPARENCY", label: "Reduce Transparency"
+        )
         for _ in 0 ..< 4 {
             if transparency.isHittable { break }
             settings.swipeUp()
@@ -32,8 +34,14 @@ enum AccessibilitySettings {
         set(transparency, to: reduceTransparency)
         settings.navigationBars.buttons.firstMatch.tap()
         settings.staticTexts["Motion"].tap()
-        set(settings.switches["REDUCE_MOTION"], to: reduceMotion)
+        set(effectSwitch(in: settings, identifier: "REDUCE_MOTION", label: "Reduce Motion"), to: reduceMotion)
         settings.terminate()
+    }
+
+    private static func effectSwitch(in settings: XCUIApplication, identifier: String, label: String) -> XCUIElement {
+        // iOS 18 exposes the ID on the text row and the English label on its switch.
+        // Newer Settings exposes the ID directly on the switch.
+        settings.switches.matching(NSPredicate(format: "identifier == %@ OR label == %@", identifier, label)).firstMatch
     }
 
     private static func set(_ control: XCUIElement, to enabled: Bool) {
