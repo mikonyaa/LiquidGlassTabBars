@@ -1,0 +1,58 @@
+import XCTest
+
+@MainActor
+enum AccessibilitySettings {
+    static func setReducedEffects(_ enabled: Bool) {
+        set(reduceTransparency: enabled, reduceMotion: enabled)
+    }
+
+    static func set(reduceTransparency: Bool, reduceMotion: Bool) {
+        let settings = XCUIApplication(bundleIdentifier: "com.apple.Preferences")
+        settings.launchArguments = ["-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
+        settings.launch()
+        // Settings preserves its last page between launches.
+        for _ in 0 ..< 6 {
+            if settings.navigationBars["Settings"].exists { break }
+            let back = settings.navigationBars.buttons.firstMatch
+            if back.exists { back.tap() }
+        }
+        let accessibility = settings.cells.staticTexts["Accessibility"]
+        for _ in 0 ..< 6 {
+            if accessibility.isHittable { break }
+            settings.swipeUp()
+        }
+        XCTAssertTrue(accessibility.waitForExistence(timeout: 5), settings.debugDescription)
+        accessibility.tap()
+        settings.staticTexts["Display & Text Size"].tap()
+        let transparency = effectSwitch(
+            in: settings, identifier: "REDUCE_TRANSPARENCY", label: "Reduce Transparency"
+        )
+        for _ in 0 ..< 4 {
+            if transparency.isHittable { break }
+            settings.swipeUp()
+        }
+        set(transparency, to: reduceTransparency)
+        settings.navigationBars.buttons.firstMatch.tap()
+        settings.staticTexts["Motion"].tap()
+        set(effectSwitch(in: settings, identifier: "REDUCE_MOTION", label: "Reduce Motion"), to: reduceMotion)
+        settings.terminate()
+    }
+
+    private static func effectSwitch(in settings: XCUIApplication, identifier: String, label: String) -> XCUIElement {
+        // iOS 18 exposes the ID on the text row and the English label on its switch.
+        // Newer Settings exposes the ID directly on the switch.
+        settings.switches.matching(NSPredicate(format: "identifier == %@ OR label == %@", identifier, label)).firstMatch
+    }
+
+    private static func set(_ control: XCUIElement, to enabled: Bool) {
+        XCTAssertTrue(control.waitForExistence(timeout: 5))
+        if (control.value as? String == "1") != enabled {
+            control.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.5)).tap()
+        }
+        let updated = XCTNSPredicateExpectation(
+            predicate: NSPredicate(format: "value == %@", enabled ? "1" : "0"), object: control
+        )
+        XCTAssertEqual(XCTWaiter.wait(for: [updated], timeout: 5), .completed)
+        XCTAssertEqual(control.value as? String, enabled ? "1" : "0")
+    }
+}

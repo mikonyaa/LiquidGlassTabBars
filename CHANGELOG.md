@@ -2,6 +2,28 @@
 
 All notable changes will be documented here.
 
+## Unreleased — 1.0.4 release candidate
+
+### Fixed
+
+- Reduce Transparency composites every fallback color over opaque adaptive system backing.
+- Morphing adapts to equal-width capsules when long labels or Dynamic Type exceed available width.
+- Small text sizes retain a minimum 44 pt button height and sufficient surface padding.
+- Floating keeps selection and reselection reachable in RTL by exposing the button label without separate visual child elements.
+- Reduced motion disables the selection transaction and native morphing IDs.
+- Demo Create, Focus and Share controls perform local actions; progress consistently displays 3/5 (60%).
+- Demo style and palette menus use single native menu buttons with full labels/current values, at least 44 pt targets and an adaptive header at large text sizes.
+- The demo panel's decorative border does not intercept menu taps.
+- CI runs for existing SemVer tags and checks both SDK lanes, external consumers and hosted/UI tests.
+- Capture validates tools and devices, creates an isolated Simulator by default, cleans up its own resources on interrupts and records provenance.
+
+### Added
+
+- Public-API integration host, real accessibility settings automation and pixel/geometry/binding regression fixtures.
+- Checksum-pinned XcodeGen installation, reproducible commands and a separate physical-device/pilot checklist.
+
+Public initializer signatures, product/module names, generic IDs, binding and `onReselect` remain compatible. No minimum OS or runtime dependency changes. See [draft release notes](Docs/ReleaseNotes-1.0.4-draft.md).
+
 ## 1.0.3
 
 ### Changed

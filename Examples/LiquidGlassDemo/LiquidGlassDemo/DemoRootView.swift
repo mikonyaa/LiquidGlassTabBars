@@ -3,14 +3,18 @@ import SwiftUI
 import UIKit
 
 struct DemoRootView: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var selectedTab: DemoTab
     @State private var barStyle: DemoBarStyle
     @State private var palette: DemoPalette
+    @State private var fixture = DemoFixture()
     @State private var transitionSnapshot: UIImage?
     @State private var transitionSnapshotOpacity = 0.0
     @State private var transitionID = UUID()
+    @State private var controlPanelHeight: CGFloat = 50
 
     private let showcaseMode: Bool
+    private let accessibilityControls: Bool
 
     init() {
         let arguments = ProcessInfo.processInfo.arguments
@@ -39,6 +43,7 @@ struct DemoRootView: View {
         _barStyle = State(initialValue: initialStyle)
         _palette = State(initialValue: arguments.contains("--graphite") ? .graphite : .classic)
         showcaseMode = arguments.contains("--showcase")
+        accessibilityControls = arguments.contains("--accessibility-controls")
     }
 
     private var items: [LiquidTabItem<DemoTab>] {
@@ -57,6 +62,9 @@ struct DemoRootView: View {
             }
 
             controlPanel
+                .dynamicTypeSize(accessibilityControls ? .accessibility5 : dynamicTypeSize)
+                .frame(width: accessibilityControls ? 320 : nil)
+                .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { controlPanelHeight = $0 }
                 .padding(.horizontal, 16)
                 .padding(.top, 8)
         }
@@ -91,7 +99,7 @@ struct DemoRootView: View {
             tint: palette.theme.tint
         ) {
             ForEach(DemoTab.allCases) { tab in
-                DemoScreen(tab: tab, palette: palette)
+                DemoScreen(tab: tab, palette: palette, fixture: $fixture, controlPanelHeight: controlPanelHeight)
                     .tabItem {
                         Label(tab.title, systemImage: tab.systemImage)
                     }
@@ -101,7 +109,7 @@ struct DemoRootView: View {
     }
 
     private var customTabs: some View {
-        DemoScreen(tab: selectedTab, palette: palette)
+        DemoScreen(tab: selectedTab, palette: palette, fixture: $fixture, controlPanelHeight: controlPanelHeight)
             .safeAreaInset(edge: .bottom, spacing: 0) {
                 LiquidTabBar(
                     selection: $selectedTab,
@@ -118,15 +126,20 @@ struct DemoRootView: View {
 
     @ViewBuilder
     private var controlPanel: some View {
-        let panel = HStack(spacing: 10) {
-            styleMenu
-
-            Spacer(minLength: 12)
-
-            paletteMenu
+        let panel = ViewThatFits(in: .horizontal) {
+            HStack(spacing: 10) {
+                styleMenu.fixedSize(horizontal: true, vertical: false)
+                Spacer(minLength: 12)
+                paletteMenu.fixedSize(horizontal: true, vertical: false)
+            }
+            VStack(alignment: .leading, spacing: 6) {
+                styleMenu
+                paletteMenu
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(.horizontal, 14)
-        .frame(height: 50)
+        .padding(.vertical, 3)
 
         panel
             .background(
@@ -136,54 +149,39 @@ struct DemoRootView: View {
             .overlay {
                 RoundedRectangle(cornerRadius: 22)
                     .stroke(.white.opacity(0.12), lineWidth: 0.75)
+                    .allowsHitTesting(false)
             }
             .shadow(color: .black.opacity(0.16), radius: 12, y: 5)
     }
 
     private var styleMenu: some View {
-        Menu {
-            ForEach(DemoBarStyle.allCases) { style in
-                Button {
+        DemoMenuButton(
+            name: "Tab bar style", title: barStyle.title, symbol: barStyle.symbol,
+            choices: DemoBarStyle.allCases.map { style in
+                DemoMenuButton.Choice(title: style.title, symbol: style.symbol, selected: barStyle == style) {
                     changePresentation(
                         tab: selectedTab,
                         style: style,
                         palette: palette
                     )
-                } label: {
-                    Label(
-                        style.title,
-                        systemImage: barStyle == style ? "checkmark" : style.symbol
-                    )
                 }
             }
-        } label: {
-            Label(barStyle.title, systemImage: barStyle.symbol)
-                .font(.subheadline.weight(.semibold))
-        }
-        .accessibilityLabel("Tab bar style")
+        )
     }
 
     private var paletteMenu: some View {
-        Menu {
-            ForEach(DemoPalette.allCases) { candidate in
-                Button {
+        DemoMenuButton(
+            name: "Color palette", title: palette.title, symbol: "paintpalette.fill",
+            choices: DemoPalette.allCases.map { candidate in
+                DemoMenuButton.Choice(title: candidate.title, symbol: "circle.fill", selected: palette == candidate) {
                     changePresentation(
                         tab: selectedTab,
                         style: barStyle,
                         palette: candidate
                     )
-                } label: {
-                    Label(
-                        candidate.title,
-                        systemImage: palette == candidate ? "checkmark" : "circle.fill"
-                    )
                 }
             }
-        } label: {
-            Label(palette.title, systemImage: "paintpalette.fill")
-                .font(.subheadline.weight(.semibold))
-        }
-        .accessibilityLabel("Color palette")
+        )
     }
 
     @MainActor
@@ -275,6 +273,89 @@ struct DemoRootView: View {
 
     private func pause(milliseconds: UInt64) async {
         try? await Task.sleep(nanoseconds: milliseconds * 1_000_000)
+    }
+}
+
+@MainActor
+private struct DemoMenuButton: UIViewRepresentable {
+    struct Choice {
+        let title: String
+        let symbol: String
+        let selected: Bool
+        let action: @MainActor () -> Void
+    }
+
+    let name: String
+    let title: String
+    let symbol: String
+    let choices: [Choice]
+
+    func makeUIView(context: Context) -> UIButton {
+        let button = UIButton(type: .system)
+        button.showsMenuAsPrimaryAction = true
+        button.isAccessibilityElement = true
+        button.titleLabel?.adjustsFontForContentSizeCategory = true
+        return button
+    }
+
+    func updateUIView(_ button: UIButton, context: Context) {
+        var configuration = UIButton.Configuration.plain()
+        configuration.title = title
+        configuration.titleLineBreakMode = .byTruncatingTail
+        configuration.image = UIImage(systemName: symbol)
+        configuration.imagePadding = 6
+        configuration.contentInsets = .zero
+        configuration.baseForegroundColor = .systemBlue
+        configuration.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(textStyle: .subheadline)
+        let traits = UITraitCollection(preferredContentSizeCategory: context.environment.dynamicTypeSize.uiCategory)
+        let preferredFont = UIFont.preferredFont(forTextStyle: .subheadline, compatibleWith: traits)
+        let descriptor = preferredFont.fontDescriptor.addingAttributes([
+            .traits: [UIFontDescriptor.TraitKey.weight: UIFont.Weight.semibold.rawValue]
+        ])
+        let font = UIFont(descriptor: descriptor, size: 0)
+        configuration.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { attributes in
+            var result = attributes
+            result.font = font
+            return result
+        }
+        button.configuration = configuration
+        button.accessibilityLabel = name
+        button.accessibilityValue = title
+        button.menu = UIMenu(children: choices.map { choice in
+            UIAction(
+                title: choice.title, image: UIImage(systemName: choice.symbol),
+                state: choice.selected ? .on : .off
+            ) { _ in choice.action() }
+        })
+        button.invalidateIntrinsicContentSize()
+    }
+
+    func sizeThatFits(_ proposal: ProposedViewSize, uiView: UIButton, context: Context) -> CGSize? {
+        let size = uiView.intrinsicContentSize
+        return CGSize(
+            width: min(max(44, size.width), max(44, proposal.width ?? size.width)),
+            height: min(max(44, size.height), max(44, proposal.height ?? size.height))
+        )
+    }
+}
+
+private extension DynamicTypeSize {
+    var uiCategory: UIContentSizeCategory {
+        switch self {
+        case .xSmall: .extraSmall
+        case .small: .small
+        case .medium: .medium
+        case .large: .large
+        case .xLarge: .extraLarge
+        case .xxLarge: .extraExtraLarge
+        case .xxxLarge: .extraExtraExtraLarge
+        case .accessibility1: .accessibilityMedium
+        case .accessibility2: .accessibilityLarge
+        case .accessibility3: .accessibilityExtraLarge
+        case .accessibility4: .accessibilityExtraExtraLarge
+        case .accessibility5: .accessibilityExtraExtraExtraLarge
+        @unknown default: .large
+        }
     }
 }
 

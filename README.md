@@ -63,12 +63,12 @@ Choose the `LiquidGlassDemo` scheme and an iOS Simulator, then run with `⌘R`. 
 Optional: regenerate the Xcode project with XcodeGen if you prefer a generated project workflow:
 
 ```bash
-cd Examples/LiquidGlassDemo
-xcodegen generate
-open LiquidGlassDemo.xcodeproj
+Scripts/install_xcodegen.sh /tmp/liquid-xcodegen
+(cd Examples/LiquidGlassDemo && /tmp/liquid-xcodegen/xcodegen/bin/xcodegen generate)
+open Examples/LiquidGlassDemo/LiquidGlassDemo.xcodeproj
 ```
 
-XcodeGen is not required. The checked-in `.xcodeproj` remains the default path for beginners.
+This installs checksum-pinned XcodeGen 2.45.4 into a temporary directory. XcodeGen is optional; the checked-in `.xcodeproj` remains the default path for beginners.
 
 Run package tests:
 
@@ -142,6 +142,10 @@ Change `variant` to `.morphing` for the expanding control layout.
 
 Custom Floating and Morphing bars are designed and tested for two to five primary destinations. For a larger information architecture, use `SystemGlassTabView` so the platform can manage overflow, adaptation, and accessibility behavior.
 
+Supply **unique, stable IDs** and a selection contained in `items`. When destinations change, update selection in your own app. The component never silently substitutes another ID. An empty list renders no control; an invalid selection highlights nothing until the caller changes it.
+
+Give custom bars at least **320 pt of usable width after outer padding**, for 2–5 items. At constrained widths or large text sizes, Morphing adapts to equal-width capsules. The selected visible label may truncate; the full title remains its accessibility label. Dynamic Type still scales the label and height. Wider layouts retain the expanding control. Use the system variant for smaller spaces or more destinations.
+
 Place a custom bar in a bottom safe-area inset so scrolling content is never covered:
 
 ```swift
@@ -185,7 +189,22 @@ let brandTheme = LiquidTabBarTheme(
 )
 ```
 
+Reduce Transparency composites `fallbackFill` over an opaque adaptive system background. Even `.clear` or an alpha tint cannot expose the underlying content in that mode. Ordinary Liquid Glass/material rendering is unchanged. Test custom foreground colors in both appearances.
+
 See [Customization](Docs/Customization.md) for the reasoning behind each value.
+
+## Verification and demo actions
+
+Create opens a cancellable local sample sheet, Focus changes the preview state, and Share opens the system share sheet with sample content. Progress uses one fixture: `3/5 = 60%`. These sample values are local and are not saved permanently.
+
+The shared `LiquidGlassDemo` scheme includes a separate public-API integration host, hosted pixel tests, and UI tests. Run the complete Simulator suite and external package consumers:
+
+```bash
+Scripts/test_ui.sh
+Scripts/validate_consumers.sh
+```
+
+The test script creates and removes its own Simulator. It uses actual Reduce Motion/Transparency settings through Settings UI. [Validation](Docs/Validation.md) lists the matrix, commands, versions and remaining physical-device gates. A Simulator pass does not complete the device or independent developer pilot checklist.
 
 ## Project structure
 

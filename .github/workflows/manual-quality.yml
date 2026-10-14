@@ -1,75 +1,56 @@
 name: Manual Release Quality
-
 on:
   workflow_dispatch:
-
 permissions:
   contents: read
-
+defaults:
+  run:
+    shell: bash
 concurrency:
   group: manual-release-quality-${{ github.ref }}
   cancel-in-progress: false
-
-env:
-  DEVELOPER_DIR: /Applications/Xcode_26.5.app/Contents/Developer
-  DEMO_PROJECT: Examples/LiquidGlassDemo/LiquidGlassDemo.xcodeproj
-  DEMO_SCHEME: LiquidGlassDemo
-  ARCHIVE_DESTINATION: "generic/platform=iOS"
-  XCODEGEN_VERSION: "2.45.4"
-
 jobs:
   release-quality:
     runs-on: macos-26
     timeout-minutes: 45
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.5.app/Contents/Developer
     steps:
       - uses: actions/checkout@v4
       - name: Ensure SwiftLint
         run: command -v swiftlint >/dev/null || brew install swiftlint
-      - name: Test and lint
+      - name: Install checksum-pinned XcodeGen
         run: |
+          Scripts/install_xcodegen.sh "$RUNNER_TEMP/pinned-xcodegen"
+          echo "$RUNNER_TEMP/pinned-xcodegen/xcodegen/bin" >> "$GITHUB_PATH"
+      - name: Automatic package, consumer and generation gates
+        env:
+          LIQUID_CONSUMER_OUTPUT: ${{ runner.temp }}/liquid-consumers
+        run: |
+          swift --version
+          xcodebuild -version
+          swiftlint version
+          xcodegen --version
           swift test
           swiftlint lint --strict
-      - name: Install pinned XcodeGen
+          Scripts/validate_consumers.sh
+          (cd Examples/LiquidGlassDemo && xcodegen generate && xcodegen generate)
+          git diff --exit-code -- Examples/LiquidGlassDemo/LiquidGlassDemo.xcodeproj
+      - name: Clean unsigned device archive
         run: |
-          curl --fail --location --silent --show-error \
-            "https://github.com/yonaskolb/XcodeGen/releases/download/${XCODEGEN_VERSION}/xcodegen.zip" \
-            --output "$RUNNER_TEMP/xcodegen.zip"
-          unzip -q "$RUNNER_TEMP/xcodegen.zip" -d "$RUNNER_TEMP/xcodegen"
-          echo "$RUNNER_TEMP/xcodegen/xcodegen/bin" >> "$GITHUB_PATH"
-      - name: Reproduce checked-in project
-        run: |
-          test "$(xcodegen --version | awk '{print $2}')" = "$XCODEGEN_VERSION"
-          demo_dir="$(dirname "$DEMO_PROJECT")"
-          (
-            cd "$demo_dir"
-            xcodegen generate
-          )
-          git diff --exit-code -- "$DEMO_PROJECT/project.pbxproj"
-      - name: Clean archive
-        run: |
-          xcodebuild \
-            -project "$DEMO_PROJECT" \
-            -scheme "$DEMO_SCHEME" \
-            -destination "$ARCHIVE_DESTINATION" \
-            -archivePath "$RUNNER_TEMP/$DEMO_SCHEME.xcarchive" \
-            CODE_SIGNING_ALLOWED=NO \
-            clean archive
-          test -d "$RUNNER_TEMP/$DEMO_SCHEME.xcarchive"
-      - name: Check documentation and repository hygiene
-        run: |
-          ruby -e 'Dir["**/*.md"].each { |file| File.read(file).scan(/\[[^\]]*\]\(([^)]+)\)/).flatten.each { |link| next if link.start_with?("http", "#", "mailto:"); path = link.split("#", 2).first.delete_prefix("<").delete_suffix(">"); next if path.empty?; abort("Missing #{path} from #{file}") unless File.exist?(File.expand_path(path, File.dirname(file))) } }'
-          if git ls-files | grep -E '(^|/)(\.DS_Store|Thumbs\.db|xcuserdata|DerivedData|\.build)(/|$)|\.(xcuserstate|xccheckout)$'; then
-            exit 1
-          fi
-          test -n "$(git ls-files 'Assets/**')"
-      - name: Record remaining human gates
+          xcodebuild -project Examples/LiquidGlassDemo/LiquidGlassDemo.xcodeproj \
+            -scheme LiquidGlassDemo -destination 'generic/platform=iOS' \
+            -archivePath "$RUNNER_TEMP/LiquidGlassDemo.xcarchive" CODE_SIGNING_ALLOWED=NO clean archive
+          test -d "$RUNNER_TEMP/LiquidGlassDemo.xcarchive"
+      - name: Record human and external gates separately
         run: |
           {
-            echo "## Human release gates"
-            echo
-            echo "- [ ] Simulator smoke test"
-            echo "- [ ] VoiceOver and accessibility settings review"
-            echo "- [ ] Screenshot and GIF visual review"
-            echo "- [ ] Release notes, tag, and catalog consistency review"
-            echo "- [ ] Manual publication approval"
+            echo '## Human and external gates (not completed by this workflow)'
+            echo '- [ ] iOS 17 runtime smoke test when unavailable on hosted runners'
+            echo '- [ ] Physical iPhone: Liquid Glass and home indicator'
+            echo '- [ ] VoiceOver, Reduce Motion/Transparency on physical device'
+            echo '- [ ] iPad multitasking / multiple windows review'
+            echo '- [ ] Screenshot and GIF visual review'
+            echo '- [ ] Independent developer integration pilot'
+            echo '- [ ] Release notes, version and publication decision'
           } >> "$GITHUB_STEP_SUMMARY"

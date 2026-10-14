@@ -1,0 +1,43 @@
+{
+  "capture_type": "iOS Simulator runtime screenshot during InteractionTests/testAllAccessibilitySizes(); not physical-device validation",
+  "sha": "b8b1e5896eb2d768c54e6f74eb2a737d0a254ad0",
+  "device": "LiquidUI integration 84072",
+  "device_type": "com.apple.CoreSimulator.SimDeviceType.iPhone-16-Pro-Max",
+  "os": "26.5",
+  "xcode": "Xcode 27.0\nBuild version 27A266a",
+  "captured_at_utc": "2026-10-14T00:49:54.281745+00:00",
+  "actual_settings": {
+    "reduce_transparency": true,
+    "reduce_motion": true,
+    "evidence": "systemRT:1 and systemRM:1 visible in screenshot; Settings UI assertions pass"
+  },
+  "fixture": {
+    "count": 5,
+    "variant": "floating",
+    "width": 320,
+    "dynamic_type": "accessibility4",
+    "direction": "RTL",
+    "selection": 305,
+    "binding_writes": 2,
+    "reselections": 2
+  },
+  "sha256": {
+    "Screenshots/reduce-transparency-violet.png": "7fc7cce37d11464df42f8a092067ed9fa47048b916f702afc3b29007d88720d6"
+  },
+  "commands": [
+    [
+      "env",
+      "LIQUID_TEST_RUNTIME=com.apple.CoreSimulator.SimRuntime.iOS-26-5",
+      "LIQUID_TEST_OUTPUT=<test-output>",
+      "Scripts/test_ui.sh"
+    ],
+    [
+      "xcrun",
+      "simctl",
+      "io",
+      "21ECD32F-900C-4840-9468-EBF2F9C70E85",
+      "screenshot",
+      "<capture-output>/rt-runtime.png"
+    ]
+  ]
+}

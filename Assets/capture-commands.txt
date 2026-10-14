@@ -1,0 +1,16 @@
+xcrun simctl boot 1369C764-764F-43C4-A947-04DAF021CD3A
+xcrun simctl bootstatus 1369C764-764F-43C4-A947-04DAF021CD3A -b
+xcodebuild -project ./Examples/LiquidGlassDemo/LiquidGlassDemo.xcodeproj -scheme LiquidGlassDemo -configuration Debug -destination 'platform=iOS Simulator,id=1369C764-764F-43C4-A947-04DAF021CD3A' -derivedDataPath <scratch>/DerivedData CODE_SIGNING_ALLOWED=NO build
+xcrun simctl install 1369C764-764F-43C4-A947-04DAF021CD3A <scratch>/DerivedData/Build/Products/Debug-iphonesimulator/LiquidGlassDemo.app
+xcrun simctl launch 1369C764-764F-43C4-A947-04DAF021CD3A dev.liquidglasstemplates.demo
+xcrun simctl io 1369C764-764F-43C4-A947-04DAF021CD3A screenshot <scratch>/system-classic.png
+cp <scratch>/system-classic.png ./Assets/Screenshots/system-classic.png
+xcrun simctl launch 1369C764-764F-43C4-A947-04DAF021CD3A dev.liquidglasstemplates.demo --floating --graphite
+xcrun simctl io 1369C764-764F-43C4-A947-04DAF021CD3A screenshot <scratch>/floating-graphite.png
+cp <scratch>/floating-graphite.png ./Assets/Screenshots/floating-graphite.png
+xcrun simctl launch 1369C764-764F-43C4-A947-04DAF021CD3A dev.liquidglasstemplates.demo --morphing --activity
+xcrun simctl io 1369C764-764F-43C4-A947-04DAF021CD3A screenshot <scratch>/morphing-classic.png
+cp <scratch>/morphing-classic.png ./Assets/Screenshots/morphing-classic.png
+xcrun simctl launch 1369C764-764F-43C4-A947-04DAF021CD3A dev.liquidglasstemplates.demo --showcase
+xcrun simctl io 1369C764-764F-43C4-A947-04DAF021CD3A recordVideo --codec=h264 --force <scratch>/showcase-source.mov
+ffmpeg -y -i <scratch>/showcase-source.mov -filter_complex 'fps=20,scale=400:-1:flags=lanczos,split[frames][palette_input];[palette_input]palettegen=max_colors=192:stats_mode=diff[palette];[frames][palette]paletteuse=dither=sierra2_4a:diff_mode=rectangle' -loop 0 ./Assets/GIFs/liquid-tab-bars.gif
