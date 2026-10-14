@@ -1,12 +1,12 @@
 {
   "capture_type": "iPad Simulator runtime screenshot; not physical-device or multitasking validation",
-  "sha": "0ea39e444a32dce38dc2b92b1d2a1bd77cba56f2",
+  "sha": "f816f5d0c2eed0dc9679a7cc9b668335bb854ba9",
   "device_type": "com.apple.CoreSimulator.SimDeviceType.iPad-Pro-11-inch-M4-8GB",
   "os": "26.5",
-  "captured_at_utc": "2026-10-14T03:37:50.229653+00:00",
+  "captured_at_utc": "2026-10-14T04:41:08.211080+00:00",
   "xcode": "Xcode 27.0\nBuild version 27A266a",
   "sha256": {
-    "Screenshots/ipad-floating-graphite.png": "d6a8e170666d116d38fd08447c917edec9e2099dbf6209a3b7e798e70c8b821e"
+    "Screenshots/ipad-floating-graphite.png": "bb58bc7e20b2aa2423fe7542ae67565fb64a1639fbe8e9070fe2ab26112bdb70"
   },
   "commands": [
     [
@@ -28,27 +28,27 @@
       "xcrun",
       "simctl",
       "boot",
-      "8B59A531-6E4E-467A-8264-C767B08CDE2B"
+      "85F8F05C-7F97-47D3-92E0-483B172B36DE"
     ],
     [
       "xcrun",
       "simctl",
       "bootstatus",
-      "8B59A531-6E4E-467A-8264-C767B08CDE2B",
+      "85F8F05C-7F97-47D3-92E0-483B172B36DE",
       "-b"
     ],
     [
       "xcrun",
       "simctl",
       "install",
-      "8B59A531-6E4E-467A-8264-C767B08CDE2B",
-      "<work>/integration-derived/Build/Products/Debug-iphonesimulator/LiquidGlassDemo.app"
+      "85F8F05C-7F97-47D3-92E0-483B172B36DE",
+      "<work>/evidence/rc/demo-final/DerivedData/Build/Products/Debug-iphonesimulator/LiquidGlassDemo.app"
     ],
     [
       "xcrun",
       "simctl",
       "launch",
-      "8B59A531-6E4E-467A-8264-C767B08CDE2B",
+      "85F8F05C-7F97-47D3-92E0-483B172B36DE",
       "dev.liquidglasstemplates.demo",
       "--floating",
       "--graphite"
@@ -57,9 +57,9 @@
       "xcrun",
       "simctl",
       "io",
-      "8B59A531-6E4E-467A-8264-C767B08CDE2B",
+      "85F8F05C-7F97-47D3-92E0-483B172B36DE",
       "screenshot",
-      "/var/folders/v7/ty8dwpy94vv8qzjy49934_240000gn/T/liquid-ipad-lb2w5clo/ipad-floating-graphite.png"
+      "/var/folders/v7/ty8dwpy94vv8qzjy49934_240000gn/T/liquid-ipad-4z8qs83i/ipad-floating-graphite.png"
     ],
     [
       "xcodebuild",
