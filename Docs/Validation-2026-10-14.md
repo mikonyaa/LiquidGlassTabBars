@@ -31,6 +31,7 @@ Local toolchain: macOS 26.7.1, Xcode 27.0 (27A266a), Swift 6.4 (swiftlang-6.4.0.
 | Focused final RTL round trip | Exit 0; no hittability polling needed |
 | Fresh shared scheme | Exit 0; 14 tests, zero failures/skips; all 67 configurations |
 | Post-refactor focused runtime recheck | Exit 0; four tests, zero failures/skips: Floating RTL round trip, normal UI motion, independent RT/RM and XSmall |
+| Settings lookup recheck after the first compatibility bootstrap | Exit 0; two tests, zero failures/skips: bootstrap and all four independent RT/RM combinations |
 | XcodeGen 2.45.4 checksum/install and repeated project generation | Exit 0; identical checked-in project/schemes |
 | Script syntax, YAML, relative links and diff hygiene | Exit 0 |
 | Runtime capture / negative device / interrupted recorder | Expected exits 0 / 1 / 143 |
@@ -38,6 +39,8 @@ Local toolchain: macOS 26.7.1, Xcode 27.0 (27A266a), Swift 6.4 (swiftlang-6.4.0.
 XcodeGen asset SHA-256: `090ec29491aad50aec10631bf6e62253fed733c50f3aab0f5ffc86bc170bdbef`. Consumers import public SwiftUI/LiquidUI, use Int IDs, binding/reselection, the old theme initializer and system tabs. The released consumer resolves the exact baseline SHA. See [Validation](Validation.md) for full commands and retained `.xcresult` attachments.
 
 CI runs the same automatic boundaries on Xcode 16.4/macOS 15/iOS 18.5 and Xcode 26.5/macOS 26/iOS 26.5. Explicit Bash enables pipeline failure propagation for logged commands. Actual job results are separate from this local run; the workflow retains validation logs and result bundles as artifacts.
+
+The first GitHub compatibility bootstrap exposed an OS difference in Settings: on iOS 18.5 the `REDUCE_TRANSPARENCY` identifier belongs to the row's StaticText, while its native Switch has the `Reduce Transparency` label. The actual failure hierarchy was retained. Test-helper correction `b3e862d66adf1a530c33cee72b1456efd112b391` accepts the switch identifier or English label for both effects. Real switch-value assertions and the app's environment checks remain. The fresh local bootstrap/mixed-effects recheck passed; production code and media are unchanged.
 
 ## Runtime media and compatibility
 
