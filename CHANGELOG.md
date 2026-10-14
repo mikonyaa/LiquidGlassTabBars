@@ -13,6 +13,7 @@ All notable changes will be documented here.
 - Reduced motion disables the selection transaction and native morphing IDs.
 - Demo Create, Focus and Share controls perform local actions; progress consistently displays 3/5 (60%).
 - Demo style and palette menus expose their native labels, current values and at least 44 pt targets.
+- The demo panel's decorative border does not intercept menu taps.
 - CI runs for existing SemVer tags and checks both SDK lanes, external consumers and hosted/UI tests.
 - Capture validates tools and devices, creates an isolated Simulator by default, cleans up its own resources on interrupts and records provenance.
 
