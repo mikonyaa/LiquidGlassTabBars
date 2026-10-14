@@ -63,12 +63,12 @@ Choose the `LiquidGlassDemo` scheme and an iOS Simulator, then run with `⌘R`. 
 Optional: regenerate the Xcode project with XcodeGen if you prefer a generated project workflow:
 
 ```bash
-cd Examples/LiquidGlassDemo
-xcodegen generate
-open LiquidGlassDemo.xcodeproj
+Scripts/install_xcodegen.sh /tmp/liquid-xcodegen
+(cd Examples/LiquidGlassDemo && /tmp/liquid-xcodegen/xcodegen/bin/xcodegen generate)
+open Examples/LiquidGlassDemo/LiquidGlassDemo.xcodeproj
 ```
 
-XcodeGen is not required. The checked-in `.xcodeproj` remains the default path for beginners.
+This installs checksum-pinned XcodeGen 2.45.4 into a temporary directory. XcodeGen is optional; the checked-in `.xcodeproj` remains the default path for beginners.
 
 Run package tests:
 

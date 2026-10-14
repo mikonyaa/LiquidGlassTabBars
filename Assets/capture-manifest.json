@@ -1,0 +1,17 @@
+{
+  "capture_type": "iOS Simulator runtime screenshots and recording; not physical-device validation",
+  "sha": "d06d7e69a825bcd87683a135463df4b149509c62",
+  "dirty": true,
+  "captured_at_utc": "2026-10-13T23:52:24.870747+00:00",
+  "device": "Liquid Glass capture 50182",
+  "device_type": "com.apple.CoreSimulator.SimDeviceType.iPhone-16-Pro-Max",
+  "os": "26.5",
+  "xcode": "Xcode 27.0\nBuild version 27A266a",
+  "commands": "capture-commands.txt",
+  "sha256": {
+    "Screenshots/system-classic.png": "4f877215409f1428861888730da74639765fe0d5abc89b83fd40ac59930d9d78",
+    "Screenshots/floating-graphite.png": "ee6ec3b50d7e9263cfca677abad52bfcb1f5a9e90bd580f1f6b6f26ea38521d6",
+    "Screenshots/morphing-classic.png": "e15a065bf8c50900cb30b3a655b3bc5effb8857ddceb17c3f95d2eca91e8fbeb",
+    "GIFs/liquid-tab-bars.gif": "20d790052e1a9b2e79472423630b37ca2dcda2d8401ba4f2e6a8af1e0b51733e"
+  }
+}

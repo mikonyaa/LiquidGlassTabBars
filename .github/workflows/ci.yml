@@ -32,7 +32,8 @@ jobs:
             runner: macos-26
             developer_dir: /Applications/Xcode_26.5.app/Contents/Developer
     runs-on: ${{ matrix.runner }}
-    timeout-minutes: 45
+    # The full real-tap matrix also runs on the slower compatibility runner.
+    timeout-minutes: 75
     env:
       DEVELOPER_DIR: ${{ matrix.developer_dir }}
     steps:
